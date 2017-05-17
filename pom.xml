@@ -1,0 +1,109 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.chencoder</groupId>
+  <artifactId>rpc</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <packaging>pom</packaging>
+  
+  
+  	<modules>
+		<module>rpc-common</module>
+		<module>rpc-core</module>
+  	</modules>
+	
+	<properties>
+		<!-- Common libs -->
+		<spring_version>3.2.13.RELEASE</spring_version>
+        <javassist_version>3.18.2-GA</javassist_version>
+        <guava.version>19.0</guava.version>
+        <apache.curator.version>2.7.1</apache.curator.version>
+        <commons-lang3.version>3.1</commons-lang3.version>
+        <netty.version>4.1.9.Final</netty.version>
+        <jersey.version>1.19</jersey.version>
+        
+        <!-- serialize -->
+        <esotericsoftware.kryo.version>2.24.0</esotericsoftware.kryo.version>
+        <caucho.hession.version>4.0.38</caucho.hession.version>
+        <alibaba.fastjson.version>1.1.36</alibaba.fastjson.version>
+        
+        <snappy-java.version>1.1.1.6</snappy-java.version>
+        
+        <!-- for maven compiler plugin -->
+        <maven_compiler_plugin_version>2.3.2</maven_compiler_plugin_version>
+        <java_source_version>1.7</java_source_version>
+        <java_target_version>1.7</java_target_version>
+	</properties>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring_version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-web</artifactId>
+				<version>${spring_version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>${javassist_version}</version>
+			</dependency>
+			
+			<dependency>
+		        <groupId>com.google.guava</groupId>
+		        <artifactId>guava</artifactId>
+		        <version>${guava.version}</version>
+		    </dependency>
+		    
+		    <dependency>
+	            <groupId>org.apache.commons</groupId>
+	            <artifactId>commons-lang3</artifactId>
+	            <version>${commons-lang3.version}</version>
+	        </dependency>
+		    
+		    <dependency>
+		         <groupId>org.apache.curator</groupId>
+		         <artifactId>curator-x-discovery</artifactId>
+		         <version>${apache.curator.version}</version>
+		         <exclusions>
+		             <exclusion>
+		                 <groupId>io.netty</groupId>
+		                 <artifactId>netty</artifactId>
+		             </exclusion>
+		         </exclusions>
+		     </dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	<build>
+		<plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven_compiler_plugin_version}</version>
+                <configuration>
+                    <source>${java_source_version}</source>
+                    <target>${java_target_version}</target>
+                </configuration>
+            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<addMavenDescriptor>true</addMavenDescriptor>
+						<index>true</index>
+						<manifest>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
