@@ -7,15 +7,6 @@ import com.chencoder.rpc.common.compress.GZipCompress;
 import com.chencoder.rpc.common.compress.NoCompress;
 import com.chencoder.rpc.common.compress.SnappyCompress;
 
-/*import com.zhizus.forest.common.codec.compress.Compress;
-import com.zhizus.forest.common.codec.compress.GZipCompress;
-import com.zhizus.forest.common.codec.compress.NoCompress;
-import com.zhizus.forest.common.codec.compress.SnappyCompress;
-import org.apache.commons.lang3.StringUtils;*/
-
-/**
- * Created by Dempe on 2016/12/7.
- */
 public enum CompressType {
 
     None((byte) 0), GZIP((byte) (1 << 3)), Snappy((byte) (1 << 4));

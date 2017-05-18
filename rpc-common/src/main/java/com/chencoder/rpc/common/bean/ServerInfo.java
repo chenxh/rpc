@@ -21,8 +21,17 @@ public class ServerInfo<T> {
         this.host = instance.getAddress();
         this.port = instance.getPort();
     }
+    
+    public ServerInfo(String host, int port){
+    	setHost(host);
+    	setPort(port);
+    }
 
-    public String getHost() {
+    public ServerInfo() {
+    	
+	}
+
+	public String getHost() {
         return host;
     }
 

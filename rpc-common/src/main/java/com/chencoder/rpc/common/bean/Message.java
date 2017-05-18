@@ -1,7 +1,6 @@
 package com.chencoder.rpc.common.bean;
 
 /**
- * Created by Dempe on 2016/12/7.
  */
 public class Message<T> {
 

@@ -2,9 +2,10 @@ package com.chencoder.rpc.core.transport;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.zookeeper.server.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.chencoder.rpc.common.config.ServerConfig;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -21,7 +22,7 @@ import io.netty.handler.logging.LoggingHandler;
 /**
  * Created by Dempe on 2016/12/22.
  */
-public abstract class AbstractServer {
+public abstract class AbstractServer implements Server{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractServer.class);
 
@@ -34,38 +35,37 @@ public abstract class AbstractServer {
 
     protected enum ServerState {Created, Starting, Started, Shutdown}
 
-    protected final AtomicReference<ForestServer.ServerState> serverStateRef;
+    protected final AtomicReference<NettyServer.ServerState> serverStateRef;
 
-    public AbstractServer(final IRouter iRouter, ServerConfig config, int port) throws InterruptedException {
+    public AbstractServer(ServerConfig config, int port) throws InterruptedException {
         this.port = port;
         this.config = config;
-        serverStateRef = new AtomicReference<>(ForestServer.ServerState.Created);
+        serverStateRef = new AtomicReference<>(AbstractServer.ServerState.Created);
         boss = new NioEventLoopGroup();
         worker = new NioEventLoopGroup();
         bootstrap = new ServerBootstrap();
 
         bootstrap.group(boss, worker).channel(NioServerSocketChannel.class)
-                .option(ChannelOption.SO_BACKLOG, config.soBacklog)
-                .option(ChannelOption.SO_KEEPALIVE, config.soKeepAlive)
-                .option(ChannelOption.TCP_NODELAY, config.tcpNoDelay)
-                .handler(new LoggingHandler(LogLevel.INFO)).childHandler(newChannelInitializer(iRouter));
+                .option(ChannelOption.SO_BACKLOG, config.getSoBacklog())
+                .option(ChannelOption.SO_KEEPALIVE, config.getSoKeepAlive())
+                .option(ChannelOption.TCP_NODELAY, config.getTcpNoDelay())
+                .handler(new LoggingHandler(LogLevel.INFO)).childHandler(newChannelInitializer());
     }
 
-    public abstract ChannelInitializer<SocketChannel> newChannelInitializer(final IRouter iRouter);
+    public abstract ChannelInitializer<SocketChannel> newChannelInitializer();
 
 
-    public ChannelFuture start() throws InterruptedException {
-        if (!serverStateRef.compareAndSet(ForestServer.ServerState.Created, ForestServer.ServerState.Starting)) {
+    public void start() {
+        if (!serverStateRef.compareAndSet(AbstractServer.ServerState.Created, AbstractServer.ServerState.Starting)) {
             throw new IllegalStateException("Server already started");
         }
         ChannelFuture channelFuture = bootstrap.bind(port);
-        LOGGER.info("Server bind port:{}, soBacklog:{}, soKeepLive:{}, tcpNodDelay:{}", port,
-                config.soBacklog, config.soKeepAlive, config.tcpNoDelay);
+       /* LOGGER.info("Server bind port:{}, soBacklog:{}, soKeepLive:{}, tcpNodDelay:{}", port,
+                config.getSoBacklog(), config.getSoKeepAlive(), config.getTcpNoDelay() );*/
 
-        serverStateRef.set(ForestServer.ServerState.Started); // It will come here only if this was the thread that transitioned to Starting
+        serverStateRef.set(NettyServer.ServerState.Started); // It will come here only if this was the thread that transitioned to Starting
         channel = channelFuture.channel();
         channel.closeFuture();
-        return channelFuture;
     }
 
 
@@ -79,7 +79,7 @@ public abstract class AbstractServer {
     }
 
     public void shutdown() throws InterruptedException {
-        if (!serverStateRef.compareAndSet(ForestServer.ServerState.Started, ForestServer.ServerState.Shutdown)) {
+        if (!serverStateRef.compareAndSet(ServerState.Started,ServerState.Shutdown)) {
             throw new IllegalStateException("The server is already shutdown.");
         } else {
             channel.close().sync();
@@ -87,7 +87,7 @@ public abstract class AbstractServer {
     }
 
     public void waitTillShutdown() throws InterruptedException {
-        ForestServer.ServerState serverState = serverStateRef.get();
+        NettyServer.ServerState serverState = serverStateRef.get();
         switch (serverState) {
             case Created:
             case Starting:

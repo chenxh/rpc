@@ -30,7 +30,7 @@ public class NettyDecoder extends ByteToMessageDecoder {
         short magic = byteBuf.readShort();
         if (magic != Constants.MAGIC) {
             byteBuf.resetReaderIndex();
-            //throw new RpcFrameworkException("ForestDecoder transport header not support, type: " + magic);
+            throw new RuntimeException("Decoder transport header not support, type: " + magic);
         }
         byte version = byteBuf.readByte();
         byte extend = byteBuf.readByte();

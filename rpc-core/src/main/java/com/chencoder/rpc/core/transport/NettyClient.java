@@ -1,5 +1,19 @@
 package com.chencoder.rpc.core.transport;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.chencoder.rpc.common.bean.Message;
+import com.chencoder.rpc.common.bean.Request;
+import com.chencoder.rpc.common.bean.ServerInfo;
+import com.chencoder.rpc.core.transport.client.Promise;
+import com.chencoder.rpc.core.transport.codec.NettyClientHandler;
+import com.chencoder.rpc.core.transport.codec.NettyDecoder;
+import com.chencoder.rpc.core.transport.codec.NettyEncoder;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -8,22 +22,10 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.chencoder.rpc.common.bean.Response;
-import com.chencoder.rpc.common.bean.ServerInfo;
-import com.chencoder.rpc.core.transport.codec.NettyDecoder;
-import com.chencoder.rpc.core.transport.codec.NettyEncoder;
-
-import java.io.Closeable;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  */
-public class NettyClient implements Closeable {
+public class NettyClient implements Client {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
 
@@ -31,6 +33,8 @@ public class NettyClient implements Closeable {
     protected EventLoopGroup group;
     private String host;
     private int port;
+    
+    private ChannelFuture channelFuture;
 
     public NettyClient(ServerInfo info) throws InterruptedException {
         this.host = info.getHost();
@@ -59,13 +63,13 @@ public class NettyClient implements Closeable {
     public void initClientChannel(SocketChannel ch) {
         ch.pipeline().addLast("encode", new NettyEncoder());
         ch.pipeline().addLast("decode", new NettyDecoder());
-        //ch.pipeline().addLast("handler", new ClientHandler());
+        ch.pipeline().addLast("handler", new NettyClientHandler());
     }
 
-    public ChannelFuture connect() {
+    public void connect() {
         ChannelFuture connect = b.connect(host, port);
         connect.awaitUninterruptibly();
-        return connect;
+        channelFuture =  connect;
     }
 
     @Override
@@ -96,5 +100,24 @@ public class NettyClient implements Closeable {
             }*/
         }
     }
+
+	@Override
+	public ResponseFuture<?> request(Message message, long timeout) {
+		if(!isConnect()){
+			connect();
+		}
+		ResponseFuture responseFuture = new ResponseFuture(System.currentTimeMillis(), timeout, message, new Promise());
+		channelFuture.channel().writeAndFlush(message);
+		return responseFuture;
+	}
+	
+	private boolean isConnect(){
+		return channelFuture != null && channelFuture.channel().isActive();
+	}
+
+	@Override
+	public ServerInfo getServerInfo() {
+		return new ServerInfo(host,port);
+	}
 
 }

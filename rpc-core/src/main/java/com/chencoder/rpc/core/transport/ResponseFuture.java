@@ -1,25 +1,20 @@
 package com.chencoder.rpc.core.transport;
 
 import com.chencoder.rpc.common.bean.Message;
-
-import io.netty.channel.Channel;
-import io.netty.util.concurrent.Promise;
+import com.chencoder.rpc.core.transport.client.Promise;
 
 /**
- * Created by Dempe on 2016/12/7.
  */
-public class NettyResponseFuture<T> {
+public class ResponseFuture<T> {
     private long createTime;
     private long timeOut;
     private Message request;
-    private Channel channel;
     private Promise<T> promise;
 
-    public NettyResponseFuture(long createTime, long timeOut, Message request, Channel channel, Promise<T> promise) {
+    public ResponseFuture(long createTime, long timeOut, Message request, Promise<T> promise) {
         this.createTime = createTime;
         this.timeOut = timeOut;
         this.request = request;
-        this.channel = channel;
         this.promise = promise;
     }
 
@@ -37,14 +32,6 @@ public class NettyResponseFuture<T> {
 
     public void setRequest(Message request) {
         this.request = request;
-    }
-
-    public Channel getChannel() {
-        return channel;
-    }
-
-    public void setChannel(Channel channel) {
-        this.channel = channel;
     }
 
     public long getCreateTime() {
