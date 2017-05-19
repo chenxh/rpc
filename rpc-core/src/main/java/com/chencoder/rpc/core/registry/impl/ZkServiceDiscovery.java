@@ -1,36 +1,33 @@
 package com.chencoder.rpc.core.registry.impl;
 
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
-import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.x.discovery.ServiceCache;
 import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.details.InstanceSerializer;
 import org.apache.curator.x.discovery.details.JsonInstanceSerializer;
-import org.codehaus.jackson.map.annotate.JsonRootName;
 
 import com.chencoder.rpc.common.Constants;
-import com.chencoder.rpc.common.HaStrategyType;
-import com.chencoder.rpc.common.LoadBalanceType;
 import com.chencoder.rpc.common.bean.MetaInfo;
 import com.chencoder.rpc.core.registry.AbstractServiceDiscovery;
-import com.chencoder.rpc.core.registry.IServiceEventListener;
 
 /**
  */
-public class ZkServiceDiscovery extends AbstractServiceDiscovery<MetaInfo> implements TreeCacheListener {
+public class ZkServiceDiscovery extends AbstractServiceDiscovery<MetaInfo> {
 
-    private final static InstanceSerializer serializer = new JsonInstanceSerializer<>(MetaInfo.class);
+    private final static InstanceSerializer<MetaInfo> serializer = new JsonInstanceSerializer<>(MetaInfo.class);
 
     private ServiceDiscovery<MetaInfo> serviceDiscovery;
 
     private String address = "localhost:2181";
+    
+    private final static ConcurrentHashMap<String, ServiceCache<MetaInfo>> cacheMap = new ConcurrentHashMap<String, ServiceCache<MetaInfo>>(); 
 
     public void start() throws Exception {
         CuratorFramework client = CuratorFrameworkFactory.newClient(address, new ExponentialBackoffRetry(1000, 3));
@@ -40,22 +37,21 @@ public class ZkServiceDiscovery extends AbstractServiceDiscovery<MetaInfo> imple
                 .basePath(Constants.BASE_PATH)
                 .serializer(serializer)
                 .build();
-
         serviceDiscovery.start();
     }
 
     @Override
-    public void registerService(ServiceInstance service) throws Exception {
+    public void registerService(ServiceInstance<MetaInfo> service) throws Exception {
         serviceDiscovery.registerService(service);
     }
 
     @Override
-    public void updateService(ServiceInstance service) throws Exception {
+    public void updateService(ServiceInstance<MetaInfo> service) throws Exception {
         serviceDiscovery.unregisterService(service);
     }
 
     @Override
-    public void unregisterService(ServiceInstance service) throws Exception {
+    public void unregisterService(ServiceInstance<MetaInfo> service) throws Exception {
         serviceDiscovery.unregisterService(service);
     }
 
@@ -66,6 +62,10 @@ public class ZkServiceDiscovery extends AbstractServiceDiscovery<MetaInfo> imple
 
     @Override
     public Collection<ServiceInstance<MetaInfo>> queryForInstances(String name) throws Exception {
+    	ServiceCache<MetaInfo> serviceCache = getServiceCache(name);
+    	if(serviceCache != null){
+    		return serviceCache.getInstances();
+    	}
         return serviceDiscovery.queryForInstances(name);
     }
 
@@ -74,32 +74,22 @@ public class ZkServiceDiscovery extends AbstractServiceDiscovery<MetaInfo> imple
         return serviceDiscovery.queryForInstance(name, id);
     }
 
-    @Override
-    public void childEvent(CuratorFramework client, TreeCacheEvent event) throws Exception {
-        ChildData data = event.getData();
-        ServiceInstance serviceInstance = serializer.deserialize(data.getData());
-        switch (event.getType()) {
-            case NODE_ADDED: {
-                notify(serviceInstance, IServiceEventListener.ServiceEvent.ON_REGISTER);
-                break;
-            }
-            case NODE_UPDATED: {
-                notify(serviceInstance, IServiceEventListener.ServiceEvent.ON_UPDATE);
-                break;
-            }
-            case NODE_REMOVED: {
-                notify(serviceInstance, IServiceEventListener.ServiceEvent.ON_REMOVE);
-                break;
-            }
-            default:
-        }
-    }
-
     public String getAddress() {
         return address;
     }
 
     public void setAddress(String address) {
         this.address = address;
+    }
+    
+    private ServiceCache<MetaInfo> getServiceCache(String name) throws Exception{
+    	ServiceCache<MetaInfo> cache = cacheMap.get(name);
+        if(cache == null){
+        	final ServiceCache<MetaInfo> newCache = serviceDiscovery.serviceCacheBuilder().name(name).build();
+        	newCache.start();
+            cacheMap.putIfAbsent(name, newCache);
+            return newCache;
+        }
+        return cache;
     }
 }

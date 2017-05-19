@@ -1,5 +1,7 @@
 package com.chencoder.rpc.common.bean;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  */
 public class Message<T> {
@@ -7,6 +9,8 @@ public class Message<T> {
     private Header header;
 
     private T content;
+    
+    private final static AtomicLong id = new AtomicLong(0);
 
     public Message() {
     }
