@@ -14,6 +14,8 @@ import io.netty.channel.socket.SocketChannel;
  */
 public class NettyServer extends AbstractServer {
 
+	
+	
     public NettyServer(ServerConfig config, int port) throws InterruptedException {
         super(config, port);
     }
@@ -24,7 +26,7 @@ public class NettyServer extends AbstractServer {
             protected void initChannel(SocketChannel ch) throws Exception {
                 ch.pipeline().addLast("decoder", new NettyDecoder());
                 ch.pipeline().addLast("encoder", new NettyEncoder());
-                ch.pipeline().addLast("processor", new NettyProcessorHandler());
+                ch.pipeline().addLast("processor", new NettyProcessorHandler(config.getServiceConfig()));
             }
         };
 

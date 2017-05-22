@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.bean.Message;
-import com.chencoder.rpc.common.bean.Request;
 import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.core.transport.client.Promise;
 import com.chencoder.rpc.core.transport.codec.NettyClientHandler;

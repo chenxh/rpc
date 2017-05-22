@@ -5,6 +5,10 @@ public class RpcException extends RuntimeException{
 	public RpcException(Exception e) {
 		super(e);
 	}
+	
+	public RpcException(String message) {
+		super(message);
+	}
 
 	/**
 	 * 

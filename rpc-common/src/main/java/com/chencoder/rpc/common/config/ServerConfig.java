@@ -8,6 +8,8 @@ public class ServerConfig {
 	
 	private Integer port;
 	
+	private ServiceConfig serviceConfig;
+	
 	public Integer getSoBacklog() {
 		return soBacklog;
 	}
@@ -32,7 +34,11 @@ public class ServerConfig {
 	public void setPort(Integer port) {
 		this.port = port;
 	}
-	
-	
+	public ServiceConfig getServiceConfig() {
+		return serviceConfig;
+	}
+	public void setServiceConfig(ServiceConfig serviceConfig) {
+		this.serviceConfig = serviceConfig;
+	}
 
 }

@@ -1,25 +1,48 @@
 package com.chencoder.rpc.common.config;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
-import com.chencoder.rpc.common.cluster.ha.HaStrategy;
-import com.chencoder.rpc.common.cluster.lb.LoadBalance;
+import com.chencoder.rpc.common.bean.RpcException;
 import com.google.common.collect.Maps;
 
 /**
- * Created by Dempe on 2016/12/7.
  */
 public class ServiceConfig {
 
     private String serviceName;
+    
+    private Class<?> serviceInterface;
 
     private int connectionTimeout;
-
-    private HaStrategy haStrategyType;
-
-    private LoadBalance loadBalance;
+    
+    private Object target;
 
     private Map<String, MethodConfig> methodConfigMap = Maps.newConcurrentMap();
+    
+    private Map<String, ActionMethod> actionMethods = Maps.newConcurrentMap();
+    
+    public void init(){
+    	if(target == null){
+    		throw new RpcException("无服务对象");
+    	}
+    	
+    	if(serviceName == null){
+    		serviceName = serviceInterface.getSimpleName();
+    	}
+    	Class<? extends Object> clazz = target.getClass();
+    	Method[] methods = clazz.getMethods();
+    	for(Method method : methods){
+    		if(method.getName().startsWith("$") ||  method.isAccessible()==false){
+    			continue;
+    		}
+    		actionMethods.put(createServiceMethodKey(serviceName, method), new ActionMethod(target, method));
+    	}
+    }
+    
+    private String createServiceMethodKey(String serviceName, Method method){
+    	return serviceName + "-" + method.getName();
+    }
 
     public String getServiceName() {
         return serviceName;
@@ -45,22 +68,6 @@ public class ServiceConfig {
         return methodConfigMap.put(methodName, methodConfig);
     }
 
-   /* public HaStrategyType getHaStrategyType() {
-        return haStrategyType;
-    }
-
-    public void setHaStrategyType(HaStrategyType haStrategyType) {
-        this.haStrategyType = haStrategyType;
-    }
-
-    public LoadBalanceType getLoadBalanceType() {
-        return loadBalanceType;
-    }
-
-    public void setLoadBalanceType(LoadBalanceType loadBalanceType) {
-        this.loadBalanceType = loadBalanceType;
-    }*/
-
     public int getConnectionTimeout() {
         return connectionTimeout;
     }
@@ -69,7 +76,15 @@ public class ServiceConfig {
         this.connectionTimeout = connectionTimeout;
     }
 
-    public static class Builder {
+    public Object getTarget() {
+		return target;
+	}
+
+	public void setTarget(Object target) {
+		this.target = target;
+	}
+
+	public static class Builder {
         private ServiceConfig config;
 
         public static Builder newBuilder() {
@@ -86,18 +101,14 @@ public class ServiceConfig {
             config.setConnectionTimeout(connectionTimeout);
             return this;
         }
-       /* public Builder withHaStrategyType(HaStrategyType type){
-            config.setHaStrategyType(type);
-            return this;
-        }
-        public Builder withLoadBalanceType(LoadBalanceType type){
-            config.setLoadBalanceType(type);
-            return this;
-        }*/
         public Builder withMethodConfig(String methodName, MethodConfig methodConfig) {
             config.registerMethodConfig(methodName, methodConfig);
             return this;
         }
 
     }
+
+	public ActionMethod getActionMethod(String serviceName, String methodName) {
+		return actionMethods.get(serviceName + "-" + methodName);
+	}
 }

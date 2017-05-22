@@ -15,6 +15,10 @@ public class ClientConfig {
     private String remoteIp;
     
     private int remotePort;
+    
+    private String serializeType;
+    
+    private String compressType; 
 
 	public String getServiceName() {
 		return serviceName;
@@ -71,7 +75,22 @@ public class ClientConfig {
 	public void setRemotePort(int remotePort) {
 		this.remotePort = remotePort;
 	}
-    
-    
+
+	public String getCompressType() {
+		return compressType;
+	}
+
+	public void setCompressType(String compressType) {
+		this.compressType = compressType;
+	}
+
+	public String getSerializeType() {
+		return serializeType;
+	}
+
+	public void setSerializeType(String serializeType) {
+		this.serializeType = serializeType;
+	}
+
 
 }
