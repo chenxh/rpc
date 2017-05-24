@@ -3,6 +3,8 @@ package com.chencoder.rpc.core.proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -11,6 +13,7 @@ import com.chencoder.rpc.common.SerializeType;
 import com.chencoder.rpc.common.bean.Header;
 import com.chencoder.rpc.common.bean.Message;
 import com.chencoder.rpc.common.bean.Request;
+import com.chencoder.rpc.common.bean.Response;
 import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.common.util.RpcUtil;
@@ -30,15 +33,21 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 	
 	private CompressType compressType;
 	
-	public Map<Method, Header> headerMapCache = Maps.newConcurrentMap();
+	public Map<Method, Header> headerMapCache = new ConcurrentHashMap<>();
 	
-	public JdkRpcDynamicProxy(ClientConfig config) throws InterruptedException{
+	private static AtomicLong messageId = new AtomicLong(0L);
+	
+	public JdkRpcDynamicProxy(ClientConfig config){
 		this.clientConfig = config;
 		if(!StringUtils.isEmpty(config.getRegistryAddress())){
 			client = new DefaultCluster(config);
 		}else{
 			ServerInfo serverInfo = new ServerInfo(config.getRemoteIp(), config.getRemotePort());
-			client = new NettyClient(serverInfo);
+			try {
+				client = new NettyClient(serverInfo);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		serializeType = SerializeType.getSerializeTypeByName(clientConfig.getSerializeType());
@@ -48,7 +57,7 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 	@Override
 	public Object invoke(Object target, Method method, Object[] args) throws Throwable {
 		Request req = new Request();
-		req.setServiceName(target.getClass().getSimpleName());
+		req.setServiceName(clientConfig.getServiceName());
 		req.setMethodName(method.getName());
 		req.setArgs(args);
 		
@@ -56,12 +65,15 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 		if (header == null) {
             header = Header.HeaderMaker.newMaker()
                     .make();
+            header.setMessageID(messageId.incrementAndGet());
             header.setExtend(RpcUtil.getExtend(serializeType, compressType));
             headerMapCache.put(method, header);
         }
 		Message<Request> message = new Message<Request>(header, req);
 		ResponseFuture<?> future = client.request(message, clientConfig.getConnectionTimeout());
-		return future.getPromise().await();
+		ResponseFuture.CALLBACKS.put(header.getMessageID(), future);
+		Response resp =  (Response)future.getPromise().await();
+		return resp.getResult();
 	}
 
 }

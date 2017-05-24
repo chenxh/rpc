@@ -19,7 +19,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<Message<Resp
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Message<Response> message) throws Exception {
-        ResponseFuture responseFuture = Connection.callbackMap.remove(message.getHeader().getMessageID());
+        ResponseFuture responseFuture = ResponseFuture.CALLBACKS.remove(message.getHeader().getMessageID());
         if (responseFuture == null) {
             // 服务端响应超时，NettyResponseFuture已经被回收，理论上应该将callbackMap的超时回收时间大于客户端设置的服务超时时间
             LOGGER.warn("response future is null for messageID:{}, It is likely to be time out.");

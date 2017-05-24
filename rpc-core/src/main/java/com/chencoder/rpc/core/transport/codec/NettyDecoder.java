@@ -4,14 +4,13 @@ import java.util.List;
 
 import com.chencoder.rpc.common.CompressType;
 import com.chencoder.rpc.common.Constants;
-import com.chencoder.rpc.common.SerializeType;
+import com.chencoder.rpc.common.EventType;
 import com.chencoder.rpc.common.MessageType;
+import com.chencoder.rpc.common.SerializeType;
 import com.chencoder.rpc.common.bean.Header;
 import com.chencoder.rpc.common.bean.Message;
-import com.chencoder.rpc.common.bean.Request;
 import com.chencoder.rpc.common.compress.Compress;
 import com.chencoder.rpc.common.serialize.Serialization;
-import com.chencoder.rpc.common.EventType;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -50,7 +49,7 @@ public class NettyDecoder extends ByteToMessageDecoder {
             req = serialization.deserialize(compress.unCompress(payload), MessageType.getMessageTypeByExtend(extend));
         }
         Header header = new Header(magic, version, extend, messageID, size);
-        Message<Request> message = new Message<Request>(header, (Request)req);
+        Message<?> message = new Message<>(header, req);
         list.add(message);
     }
 }

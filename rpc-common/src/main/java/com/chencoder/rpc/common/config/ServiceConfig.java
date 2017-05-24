@@ -2,9 +2,9 @@ package com.chencoder.rpc.common.config;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.chencoder.rpc.common.bean.RpcException;
-import com.google.common.collect.Maps;
 
 /**
  */
@@ -18,9 +18,9 @@ public class ServiceConfig {
     
     private Object target;
 
-    private Map<String, MethodConfig> methodConfigMap = Maps.newConcurrentMap();
+    private Map<String, MethodConfig> methodConfigMap = new ConcurrentHashMap<>();
     
-    private Map<String, ActionMethod> actionMethods = Maps.newConcurrentMap();
+    private Map<String, ActionMethod> actionMethods = new ConcurrentHashMap<>();
     
     public void init(){
     	if(target == null){
@@ -28,12 +28,12 @@ public class ServiceConfig {
     	}
     	
     	if(serviceName == null){
-    		serviceName = serviceInterface.getSimpleName();
+    		serviceName = getServiceInterface().getSimpleName();
     	}
     	Class<? extends Object> clazz = target.getClass();
     	Method[] methods = clazz.getMethods();
     	for(Method method : methods){
-    		if(method.getName().startsWith("$") ||  method.isAccessible()==false){
+    		if(method.getName().startsWith("$")){
     			continue;
     		}
     		actionMethods.put(createServiceMethodKey(serviceName, method), new ActionMethod(target, method));
@@ -110,5 +110,13 @@ public class ServiceConfig {
 
 	public ActionMethod getActionMethod(String serviceName, String methodName) {
 		return actionMethods.get(serviceName + "-" + methodName);
+	}
+
+	public Class<?> getServiceInterface() {
+		return serviceInterface;
+	}
+
+	public void setServiceInterface(Class<?> serviceInterface) {
+		this.serviceInterface = serviceInterface;
 	}
 }

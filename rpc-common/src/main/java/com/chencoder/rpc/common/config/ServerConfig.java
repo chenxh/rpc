@@ -1,5 +1,9 @@
 package com.chencoder.rpc.common.config;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 public class ServerConfig {
 	
 	private Integer soBacklog;
@@ -8,7 +12,7 @@ public class ServerConfig {
 	
 	private Integer port;
 	
-	private ServiceConfig serviceConfig;
+	private List<ServiceConfig> serviceConfigs;
 	
 	public Integer getSoBacklog() {
 		return soBacklog;
@@ -34,11 +38,11 @@ public class ServerConfig {
 	public void setPort(Integer port) {
 		this.port = port;
 	}
-	public ServiceConfig getServiceConfig() {
-		return serviceConfig;
-	}
-	public void setServiceConfig(ServiceConfig serviceConfig) {
-		this.serviceConfig = serviceConfig;
+	public void addServiceConfig(ServiceConfig config) {
+		if(serviceConfigs == null){
+			serviceConfigs = Lists.newArrayList();
+		}
+		serviceConfigs.add(config);
 	}
 
 }

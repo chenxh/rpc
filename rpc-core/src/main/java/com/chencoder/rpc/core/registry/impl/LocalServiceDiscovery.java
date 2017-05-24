@@ -14,7 +14,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
- * Created by Dempe on 2016/12/8.
  */
 public class LocalServiceDiscovery<T> extends AbstractServiceDiscovery<T> {
 

@@ -16,7 +16,7 @@
 		<!-- Common libs -->
 		<spring_version>3.2.13.RELEASE</spring_version>
         <javassist_version>3.18.2-GA</javassist_version>
-        <guava.version>19.0</guava.version>
+        <guava.version>21.0</guava.version>
         <apache.curator.version>2.7.1</apache.curator.version>
         <commons-lang3.version>3.1</commons-lang3.version>
         <netty.version>4.1.9.Final</netty.version>
@@ -36,8 +36,8 @@
         
         <!-- for maven compiler plugin -->
         <maven_compiler_plugin_version>2.3.2</maven_compiler_plugin_version>
-        <java_source_version>1.7</java_source_version>
-        <java_target_version>1.7</java_target_version>
+        <java_source_version>1.8</java_source_version>
+        <java_target_version>1.8</java_target_version>
 	</properties>
 	
 	<dependencyManagement>

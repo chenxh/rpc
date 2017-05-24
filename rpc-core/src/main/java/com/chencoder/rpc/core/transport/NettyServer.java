@@ -2,6 +2,7 @@ package com.chencoder.rpc.core.transport;
 
 
 import com.chencoder.rpc.common.config.ServerConfig;
+import com.chencoder.rpc.common.config.ServiceConfig;
 import com.chencoder.rpc.core.transport.codec.NettyDecoder;
 import com.chencoder.rpc.core.transport.codec.NettyEncoder;
 import com.chencoder.rpc.core.transport.codec.NettyProcessorHandler;
@@ -26,7 +27,7 @@ public class NettyServer extends AbstractServer {
             protected void initChannel(SocketChannel ch) throws Exception {
                 ch.pipeline().addLast("decoder", new NettyDecoder());
                 ch.pipeline().addLast("encoder", new NettyEncoder());
-                ch.pipeline().addLast("processor", new NettyProcessorHandler(config.getServiceConfig()));
+				ch.pipeline().addLast("processor", new NettyProcessorHandler());
             }
         };
 
