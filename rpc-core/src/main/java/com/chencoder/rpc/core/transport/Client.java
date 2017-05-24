@@ -10,7 +10,5 @@ public interface Client {
 	void close();
 	
 	ResponseFuture<?> request(Message message, long timeout);
-	
-	ServerInfo getServerInfo();
 
 }

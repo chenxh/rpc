@@ -3,7 +3,6 @@ package com.chencoder.rpc.core.transport.client;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Dempe on 2016/12/7.
  */
 public interface Future<T> {
 

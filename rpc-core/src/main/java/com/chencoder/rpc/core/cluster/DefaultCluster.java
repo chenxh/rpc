@@ -63,11 +63,6 @@ public class DefaultCluster implements Cluster{
 		}
 		return null;
 	}
-
-	@Override
-	public ServerInfo getServerInfo() {
-		return null;
-	}
 	
 	public ServiceInstance<MetaInfo> select(Collection<ServiceInstance<MetaInfo>> servers){
 		ArrayList<ServiceInstance<MetaInfo>> newArrayList = Lists.newArrayList(servers);

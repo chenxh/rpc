@@ -114,9 +114,4 @@ public class NettyClient implements Client {
 		return channelFuture != null && channelFuture.channel().isActive();
 	}
 
-	@Override
-	public ServerInfo getServerInfo() {
-		return new ServerInfo(host,port);
-	}
-
 }

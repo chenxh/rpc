@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import com.chencoder.rpc.common.bean.Message;
 import com.chencoder.rpc.common.bean.Response;
 import com.chencoder.rpc.core.transport.ResponseFuture;
-import com.chencoder.rpc.core.transport.client.Connection;
 import com.chencoder.rpc.common.Constants;
 import com.chencoder.rpc.common.EventType;
 
