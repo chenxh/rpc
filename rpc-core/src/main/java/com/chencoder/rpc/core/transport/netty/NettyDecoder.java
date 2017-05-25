@@ -1,4 +1,4 @@
-package com.chencoder.rpc.core.transport.codec;
+package com.chencoder.rpc.core.transport.netty;
 
 import java.util.List;
 

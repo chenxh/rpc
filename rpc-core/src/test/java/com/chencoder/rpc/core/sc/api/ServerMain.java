@@ -1,14 +1,16 @@
 package com.chencoder.rpc.core.sc.api;
 
+import com.chencoder.rpc.common.config.RegistryConfig;
 import com.chencoder.rpc.common.config.ServerConfig;
 import com.chencoder.rpc.common.config.ServiceConfig;
-import com.chencoder.rpc.core.provider.Providers;
-import com.chencoder.rpc.core.transport.NettyServer;
-import com.chencoder.rpc.core.transport.NettyServerFactory;
+import com.chencoder.rpc.core.provider.Exporter;
+import com.chencoder.rpc.core.transport.netty.NettyServer;
+import com.chencoder.rpc.core.transport.netty.NettyServerFactory;
 
 public class ServerMain {
 
 	ServerConfig serverConfig;
+	RegistryConfig registryConfig;
 	
 	private void initConfig(){
 		serverConfig = new ServerConfig();
@@ -24,13 +26,17 @@ public class ServerMain {
 		serviceConfig.setServiceInterface(DemoService.class);
 		serverConfig.addServiceConfig(serviceConfig);
 		
+		registryConfig = new RegistryConfig();
+		registryConfig.setRegistryAddress("localhost:2181");
+		
 	}
 	
 	public void start(){
 		initConfig();
 		try {
-			Providers.exportService(DemoService.class, new DemoServiceImpl());
-			NettyServer server = NettyServerFactory.createServer(serverConfig);
+			Exporter exporter = new Exporter(registryConfig);
+			exporter.exportService(DemoService.class, new DemoServiceImpl(),serverConfig.getPort());
+			NettyServer server = NettyServerFactory.createServer(serverConfig, exporter);
 			server.startAndWait();
 		} catch (InterruptedException e) {
 			e.printStackTrace();

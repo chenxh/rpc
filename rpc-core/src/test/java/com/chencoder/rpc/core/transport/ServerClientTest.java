@@ -5,8 +5,8 @@ import com.chencoder.rpc.common.bean.Header;
 import com.chencoder.rpc.common.bean.Message;
 import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.common.config.ServerConfig;
-import com.chencoder.rpc.core.transport.NettyClient;
-import com.chencoder.rpc.core.transport.NettyServer;
+import com.chencoder.rpc.core.transport.netty.NettyClient;
+import com.chencoder.rpc.core.transport.netty.NettyServer;
 
 import io.netty.channel.ChannelFuture;
 

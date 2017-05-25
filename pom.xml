@@ -18,10 +18,11 @@
 		<spring_version>3.2.13.RELEASE</spring_version>
 		<javassist_version>3.18.2-GA</javassist_version>
 		<guava.version>21.0</guava.version>
-		<apache.curator.version>2.7.1</apache.curator.version>
+		<apache.curator.version>3.3.0</apache.curator.version>
 		<commons-lang3.version>3.1</commons-lang3.version>
 		<netty.version>4.1.9.Final</netty.version>
 		<jersey.version>1.19</jersey.version>
+		<commons-pool2.version>2.2</commons-pool2.version>
 
 		<!-- serialize -->
 		<esotericsoftware.kryo.version>2.24.0</esotericsoftware.kryo.version>

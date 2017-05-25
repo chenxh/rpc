@@ -1,4 +1,4 @@
-package com.chencoder.rpc.core.transport;
+package com.chencoder.rpc.core.transport.netty;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.config.ServerConfig;
+import com.chencoder.rpc.core.transport.Server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;

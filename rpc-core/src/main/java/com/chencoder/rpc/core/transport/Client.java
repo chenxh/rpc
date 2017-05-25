@@ -1,7 +1,6 @@
 package com.chencoder.rpc.core.transport;
 
 import com.chencoder.rpc.common.bean.Message;
-import com.chencoder.rpc.common.bean.ServerInfo;
 
 public interface Client {
 	

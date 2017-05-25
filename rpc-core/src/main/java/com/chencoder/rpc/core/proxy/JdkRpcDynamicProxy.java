@@ -19,8 +19,8 @@ import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.common.util.RpcUtil;
 import com.chencoder.rpc.core.cluster.DefaultCluster;
 import com.chencoder.rpc.core.transport.Client;
-import com.chencoder.rpc.core.transport.NettyClient;
 import com.chencoder.rpc.core.transport.ResponseFuture;
+import com.chencoder.rpc.core.transport.netty.NettyClient;
 import com.google.common.collect.Maps;
 
 public class JdkRpcDynamicProxy implements InvocationHandler{
@@ -65,13 +65,12 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 		if (header == null) {
             header = Header.HeaderMaker.newMaker()
                     .make();
-            header.setMessageID(messageId.incrementAndGet());
             header.setExtend(RpcUtil.getExtend(serializeType, compressType));
             headerMapCache.put(method, header);
         }
+		header.setMessageID(messageId.incrementAndGet());
 		Message<Request> message = new Message<Request>(header, req);
 		ResponseFuture<?> future = client.request(message, clientConfig.getConnectionTimeout());
-		ResponseFuture.CALLBACKS.put(header.getMessageID(), future);
 		Response resp =  (Response)future.getPromise().await();
 		return resp.getResult();
 	}

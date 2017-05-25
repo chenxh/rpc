@@ -1,11 +1,8 @@
-package com.chencoder.rpc.core.transport;
+package com.chencoder.rpc.core.transport.netty;
 
 
 import com.chencoder.rpc.common.config.ServerConfig;
-import com.chencoder.rpc.common.config.ServiceConfig;
-import com.chencoder.rpc.core.transport.codec.NettyDecoder;
-import com.chencoder.rpc.core.transport.codec.NettyEncoder;
-import com.chencoder.rpc.core.transport.codec.NettyProcessorHandler;
+import com.chencoder.rpc.core.provider.Exporter;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -14,20 +11,24 @@ import io.netty.channel.socket.SocketChannel;
  * Created by Dempe on 2016/12/9.
  */
 public class NettyServer extends AbstractServer {
-
 	
-	
-    public NettyServer(ServerConfig config, int port) throws InterruptedException {
+	private Exporter exporter;
+    public NettyServer(ServerConfig config, int port,Exporter exporter) throws InterruptedException {
         super(config, port);
+        this.exporter = exporter;
     }
 
-    public ChannelInitializer<SocketChannel> newChannelInitializer() {
+    public NettyServer(ServerConfig config, Integer port) throws InterruptedException {
+    	this(config, port, null);
+	}
+
+	public ChannelInitializer<SocketChannel> newChannelInitializer() {
         return new ChannelInitializer<SocketChannel>() {
             @Override
             protected void initChannel(SocketChannel ch) throws Exception {
                 ch.pipeline().addLast("decoder", new NettyDecoder());
                 ch.pipeline().addLast("encoder", new NettyEncoder());
-				ch.pipeline().addLast("processor", new NettyProcessorHandler());
+				ch.pipeline().addLast("processor", new NettyProcessorHandler(exporter));
             }
         };
 

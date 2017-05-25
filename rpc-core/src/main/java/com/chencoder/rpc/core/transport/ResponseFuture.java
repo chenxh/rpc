@@ -1,11 +1,9 @@
 package com.chencoder.rpc.core.transport;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.chencoder.rpc.common.bean.Message;
-import com.chencoder.rpc.common.bean.Response;
 import com.chencoder.rpc.core.transport.client.Promise;
-import com.google.common.collect.Maps;
 
 /**
  */
@@ -15,7 +13,7 @@ public class ResponseFuture<T> {
     private Message request;
     private Promise<T> promise;
     
-    public final static Map<Long, ResponseFuture<?>> CALLBACKS = Maps.newConcurrentMap();
+    public final static ConcurrentHashMap<Long, ResponseFuture<?>> CALLBACKS = new ConcurrentHashMap<>();
 
     public ResponseFuture(long createTime, long timeOut, Message request, Promise<T> promise) {
         this.createTime = createTime;

@@ -7,13 +7,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by Dempe on 2016/12/20.
  */
-public class ServerInfo<T> {
+public class ServerInfo {
 
     private String host;
 
     private int port;
-
-    private T client;
 
     private AtomicInteger activeCount = new AtomicInteger(0);
 
@@ -45,14 +43,6 @@ public class ServerInfo<T> {
 
     public void setPort(int port) {
         this.port = port;
-    }
-
-    public T getClient() {
-        return client;
-    }
-
-    public void setClient(T client) {
-        this.client = client;
     }
 
 

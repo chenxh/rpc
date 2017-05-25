@@ -1,4 +1,4 @@
-package com.chencoder.rpc.core.transport.codec;
+package com.chencoder.rpc.core.transport.netty;
 
 import io.netty.channel.*;
 import org.slf4j.Logger;
@@ -16,7 +16,8 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<Message<Resp
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ChannelHandler.class);
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Message<Response> message) throws Exception {
         ResponseFuture responseFuture = ResponseFuture.CALLBACKS.remove(message.getHeader().getMessageID());
         if (responseFuture == null) {

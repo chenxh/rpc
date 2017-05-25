@@ -1,4 +1,4 @@
-package com.chencoder.rpc.core.transport;
+package com.chencoder.rpc.core.transport.netty;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -8,10 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.bean.Message;
 import com.chencoder.rpc.common.bean.ServerInfo;
+import com.chencoder.rpc.core.transport.Client;
+import com.chencoder.rpc.core.transport.ResponseFuture;
 import com.chencoder.rpc.core.transport.client.Promise;
-import com.chencoder.rpc.core.transport.codec.NettyClientHandler;
-import com.chencoder.rpc.core.transport.codec.NettyDecoder;
-import com.chencoder.rpc.core.transport.codec.NettyEncoder;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -106,12 +105,17 @@ public class NettyClient implements Client {
 			connect();
 		}
 		ResponseFuture responseFuture = new ResponseFuture(System.currentTimeMillis(), timeout, message, new Promise());
+		ResponseFuture.CALLBACKS.putIfAbsent(message.getHeader().getMessageID(), responseFuture);
 		channelFuture.channel().writeAndFlush(message);
 		return responseFuture;
 	}
 	
-	private boolean isConnect(){
+	public boolean isConnect(){
 		return channelFuture != null && channelFuture.channel().isActive();
+	}
+	
+	public boolean isActive(){
+		return channelFuture != null && channelFuture.channel().isActive() && channelFuture.channel().isOpen();
 	}
 
 }
