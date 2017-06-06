@@ -29,6 +29,9 @@ public class NettyProcessorHandler extends SimpleChannelInboundHandler<Message<R
 			}
 			try{
 				Request req = message.getContent();
+				if(exporter == null){
+					return;
+				}
 				DefaultServiceProvider provider = exporter.getProvider(req.getServiceName());
 				Preconditions.checkNotNull(provider);
 				
