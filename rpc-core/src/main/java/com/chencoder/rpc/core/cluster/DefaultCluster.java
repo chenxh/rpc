@@ -1,6 +1,5 @@
 package com.chencoder.rpc.core.cluster;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -8,6 +7,7 @@ import org.apache.curator.x.discovery.ServiceInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chencoder.rpc.common.LoadBalanceType;
 import com.chencoder.rpc.common.bean.Message;
 import com.chencoder.rpc.common.bean.MetaInfo;
 import com.chencoder.rpc.common.bean.RpcException;
@@ -52,7 +52,11 @@ public class DefaultCluster implements Cluster{
 			throw new RpcException("连接注册中心失败");
 		}
 		discovery = zk;
-		loadBalance = new RandomLoadBalance();
+		if(config.getLoadBalance() == null){
+			loadBalance = new RandomLoadBalance();
+		}else{
+			loadBalance = LoadBalanceType.getLoadBalance(config.getLoadBalance());
+		}
 	}
 
 	@Override
@@ -71,16 +75,21 @@ public class DefaultCluster implements Cluster{
 			Collection<ServiceInstance<MetaInfo>> servers = discovery.queryForInstances(serviceName);
 			if(servers != null && servers.size() > 0){
 //				NettyClient client = new NettyClient(new ServerInfo(select(servers)));
-				ServerInfo key = new ServerInfo(select(servers));
-				NettyClient client = pool.borrowObject(key);
+				ServiceInstance<MetaInfo> select = select(servers);
+				if(select == null){
+					throw new RpcException("no provider service selected");
+				}
+				ServerInfo serverInfo = new ServerInfo(select);
+				NettyClient client = pool.borrowObject(serverInfo);
 				ResponseFuture<?> resp = client.request(message, timeout);
-				pool.returnObject(key, client);
+				pool.returnObject(serverInfo, client);
 				return resp;
+			}else{
+				throw new RpcException("no provider service");
 			}
 		} catch (Exception e) {
 			throw new RpcException(e);
 		}
-		return null;
 	}
 	
 	public ServiceInstance<MetaInfo> select(Collection<ServiceInstance<MetaInfo>> servers){

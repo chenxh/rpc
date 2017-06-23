@@ -1,5 +1,6 @@
 package com.chencoder.rpc.core.transport.netty;
 
+import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -84,18 +85,18 @@ public class NettyClient implements Client {
 
         public void run() {
             long currentTime = System.currentTimeMillis();
-           /* for (Map.Entry<Long, NettyResponseFuture<Response>> entry : Connection.callbackMap.entrySet()) {
+            for (Entry<Long, ResponseFuture<?>> entry : ResponseFuture.CALLBACKS.entrySet()) {
                 try {
-                    NettyResponseFuture future = entry.getValue();
+                    ResponseFuture future = entry.getValue();
                     if (future.getCreateTime() + future.getTimeOut() < currentTime) {
                         // timeout: remove from callback list, and then cancel
-                        Connection.callbackMap.remove(entry.getKey());
+                    	ResponseFuture.CALLBACKS.remove(entry.getKey());
                     }
                 } catch (Exception e) {
                     LOGGER.error(name + " clear timeout future Error: methodName="
                             + entry.getValue().getRequest().getHeader() + " requestId=" + entry.getKey(), e);
                 }
-            }*/
+            }
         }
     }
 

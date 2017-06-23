@@ -8,6 +8,6 @@ import com.chencoder.rpc.common.bean.MetaInfo;
 
 public interface LoadBalance {
 
-	ServiceInstance<MetaInfo> select(List<ServiceInstance<MetaInfo>> newArrayList);
+	ServiceInstance<MetaInfo> select(List<ServiceInstance<MetaInfo>> serviceList);
 	
 }
