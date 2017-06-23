@@ -2,6 +2,7 @@ package com.chencoder.rpc.core.cluster;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.slf4j.Logger;
@@ -11,6 +12,8 @@ import com.chencoder.rpc.common.bean.Message;
 import com.chencoder.rpc.common.bean.MetaInfo;
 import com.chencoder.rpc.common.bean.RpcException;
 import com.chencoder.rpc.common.bean.ServerInfo;
+import com.chencoder.rpc.common.cluster.lb.LoadBalance;
+import com.chencoder.rpc.common.cluster.lb.RandomLoadBalance;
 import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.core.pool.KeyedNettyClientPool;
 import com.chencoder.rpc.core.pool.KeyedNettyClientPoolFactory;
@@ -30,6 +33,8 @@ public class DefaultCluster implements Cluster{
 	
 	private String serviceName;
 	
+	private LoadBalance loadBalance;
+	
 	private KeyedNettyClientPool pool = new KeyedNettyClientPool(new KeyedNettyClientPoolFactory());
 	
 	public DefaultCluster(ClientConfig config){
@@ -47,6 +52,7 @@ public class DefaultCluster implements Cluster{
 			throw new RpcException("连接注册中心失败");
 		}
 		discovery = zk;
+		loadBalance = new RandomLoadBalance();
 	}
 
 	@Override
@@ -78,8 +84,9 @@ public class DefaultCluster implements Cluster{
 	}
 	
 	public ServiceInstance<MetaInfo> select(Collection<ServiceInstance<MetaInfo>> servers){
-		ArrayList<ServiceInstance<MetaInfo>> newArrayList = Lists.newArrayList(servers);
-		return newArrayList.get(0);
+		List<ServiceInstance<MetaInfo>> newArrayList = Lists.newArrayList(servers);
+		ServiceInstance<MetaInfo> selected = loadBalance.select(newArrayList);
+		return selected;
 	}
 
 }
