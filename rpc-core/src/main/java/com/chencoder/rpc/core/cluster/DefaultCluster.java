@@ -17,6 +17,7 @@ import com.chencoder.rpc.common.cluster.lb.RandomLoadBalance;
 import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.core.pool.KeyedNettyClientPool;
 import com.chencoder.rpc.core.pool.KeyedNettyClientPoolFactory;
+import com.chencoder.rpc.core.pool.SimpleNettyClientPool;
 import com.chencoder.rpc.core.registry.ServiceDiscovery;
 import com.chencoder.rpc.core.registry.impl.ZkServiceDiscovery;
 import com.chencoder.rpc.core.transport.ResponseFuture;
@@ -35,7 +36,7 @@ public class DefaultCluster implements Cluster{
 	
 	private LoadBalance loadBalance;
 	
-	private KeyedNettyClientPool pool = new KeyedNettyClientPool(new KeyedNettyClientPoolFactory());
+	private SimpleNettyClientPool pool = new SimpleNettyClientPool(2);
 	
 	public DefaultCluster(ClientConfig config){
 		this.config = config;
@@ -80,9 +81,8 @@ public class DefaultCluster implements Cluster{
 					throw new RpcException("no provider service selected");
 				}
 				ServerInfo serverInfo = new ServerInfo(select);
-				NettyClient client = pool.borrowObject(serverInfo);
+				NettyClient client = pool.getObject(serverInfo);
 				ResponseFuture<?> resp = client.request(message, timeout);
-				pool.returnObject(serverInfo, client);
 				return resp;
 			}else{
 				throw new RpcException("no provider service");

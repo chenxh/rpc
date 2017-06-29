@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="localDateTime" value="%d{yyyy-MM-dd}" />
+	<property name="logPattern" value="[%-5p] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%C] - %m%n" />
+
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${logPattern}</pattern>
+		</encoder>
+	</appender>
+	<appender name="ROOT"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${dynamic.log.path}/root.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${dynamic.log.path}/root.log-${localDateTime}
+			</fileNamePattern>
+			<maxHistory>7</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>${logPattern}</pattern>
+		</encoder>
+	</appender>
+	
+	<root level="${log.level}">    
+		<if condition='"${devMode}".equals("true")'>
+			<then>
+				<appender-ref ref="CONSOLE" />
+			</then>
+		</if>
+	</root>
+
+</configuration>

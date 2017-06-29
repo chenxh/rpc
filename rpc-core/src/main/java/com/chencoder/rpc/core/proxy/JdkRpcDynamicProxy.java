@@ -21,7 +21,6 @@ import com.chencoder.rpc.core.cluster.DefaultCluster;
 import com.chencoder.rpc.core.transport.Client;
 import com.chencoder.rpc.core.transport.ResponseFuture;
 import com.chencoder.rpc.core.transport.netty.NettyClient;
-import com.google.common.collect.Maps;
 
 public class JdkRpcDynamicProxy implements InvocationHandler{
 	

@@ -33,6 +33,22 @@ public class NettyClient implements Client {
     private String host;
     private int port;
     
+    enum State{
+    	UN_CONN(1),CONNING(2),CONNECTED(3);
+    	private int value;
+    	State(int value){
+    		this.value = value;
+    	}
+		public int getValue() {
+			return value;
+		}
+		public void setValue(int value) {
+			this.value = value;
+		}
+    	
+    }
+    private volatile int state = State.UN_CONN.getValue();
+    
     private ChannelFuture channelFuture;
 
     public NettyClient(ServerInfo info) throws InterruptedException {
@@ -66,9 +82,18 @@ public class NettyClient implements Client {
     }
 
     public void connect() {
-        ChannelFuture connect = b.connect(host, port);
-        connect.awaitUninterruptibly();
-        channelFuture =  connect;
+    	if(state == State.UN_CONN.getValue()){
+            ChannelFuture connect = b.connect(host, port);
+            connect.awaitUninterruptibly();
+            channelFuture =  connect;
+            state = State.CONNECTED.getValue();
+    	}else if(state == State.CONNING.getValue()){
+    		while(state == State.CONNING.getValue()){
+    			if(isActive()){
+    				return;
+    			}
+    		}
+    	}
     }
 
     @Override
@@ -102,7 +127,7 @@ public class NettyClient implements Client {
 
 	@Override
 	public ResponseFuture<?> request(Message message, long timeout) {
-		if(!isConnect()){
+		if(state != State.CONNECTED.getValue()){
 			connect();
 		}
 		ResponseFuture responseFuture = new ResponseFuture(System.currentTimeMillis(), timeout, message, new Promise());
