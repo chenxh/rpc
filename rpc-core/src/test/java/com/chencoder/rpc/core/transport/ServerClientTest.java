@@ -40,7 +40,7 @@ public class ServerClientTest {
 	}
 	
 	private static Message createHearbeatMsg(){
-		Header heartBeatHeader = Header.HeaderMaker.newMaker().withMessageId(1L).make();
+		Header heartBeatHeader = Header.HeaderMaker.newMaker().make();
         heartBeatHeader.setExtend(EventType.HEARTBEAT.getValue());
         Message message = new Message(heartBeatHeader, null);
         return message;

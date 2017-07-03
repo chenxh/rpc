@@ -23,11 +23,13 @@ public class NettyProcessorHandler extends SimpleChannelInboundHandler<Message<R
 
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, Message<Request> message) throws Exception {
+		System.out.println("server recv msg:"+message);
 		if(message != null){
 			if(EventType.typeofHeartBeat(message.getHeader().getExtend())){
 				ctx.writeAndFlush(message);
 			}
 			try{
+				System.out.println("server recv msg:"+message.getHeader().getMessageID());
 				Request req = message.getContent();
 				if(exporter == null){
 					return;
@@ -43,7 +45,7 @@ public class NettyProcessorHandler extends SimpleChannelInboundHandler<Message<R
 				byte extend = (byte) (message.getHeader().getExtend() | MessageType.RESPONSE_MESSAGE_TYPE);
 			    message.getHeader().setExtend(extend);
 			    response.setResult(result);
-				ctx.writeAndFlush(new Message<Response>(message.getHeader(), response));
+				ctx.writeAndFlush(new Message<Response>(message.getHeader(), response, message.getHeader().getMessageID()));
 			}catch(Exception e){
 				ctx.newFailedFuture(e);
 				e.printStackTrace();

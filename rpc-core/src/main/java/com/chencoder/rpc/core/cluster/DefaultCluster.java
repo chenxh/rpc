@@ -15,8 +15,6 @@ import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.common.cluster.lb.LoadBalance;
 import com.chencoder.rpc.common.cluster.lb.RandomLoadBalance;
 import com.chencoder.rpc.common.config.ClientConfig;
-import com.chencoder.rpc.core.pool.KeyedNettyClientPool;
-import com.chencoder.rpc.core.pool.KeyedNettyClientPoolFactory;
 import com.chencoder.rpc.core.pool.SimpleNettyClientPool;
 import com.chencoder.rpc.core.registry.ServiceDiscovery;
 import com.chencoder.rpc.core.registry.impl.ZkServiceDiscovery;
@@ -36,7 +34,7 @@ public class DefaultCluster implements Cluster{
 	
 	private LoadBalance loadBalance;
 	
-	private SimpleNettyClientPool pool = new SimpleNettyClientPool(2);
+	private SimpleNettyClientPool pool = new SimpleNettyClientPool(4);
 	
 	public DefaultCluster(ClientConfig config){
 		this.config = config;
@@ -73,19 +71,23 @@ public class DefaultCluster implements Cluster{
 	@Override
 	public ResponseFuture<?> request(Message message, long timeout) {
 		try {
+			long start = System.currentTimeMillis();
 			Collection<ServiceInstance<MetaInfo>> servers = discovery.queryForInstances(serviceName);
 			if(servers != null && servers.size() > 0){
-//				NettyClient client = new NettyClient(new ServerInfo(select(servers)));
 				ServiceInstance<MetaInfo> select = select(servers);
 				if(select == null){
 					throw new RpcException("no provider service selected");
 				}
 				ServerInfo serverInfo = new ServerInfo(select);
 				NettyClient client = pool.getObject(serverInfo);
+				long cost = System.currentTimeMillis() - start;
+				if(cost > 0){
+					logger.debug("query provider cost[{}]ms", cost);
+				}
 				ResponseFuture<?> resp = client.request(message, timeout);
 				return resp;
 			}else{
-				throw new RpcException("no provider service");
+				throw new RpcException("no provider services");
 			}
 		} catch (Exception e) {
 			throw new RpcException(e);

@@ -34,8 +34,6 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 	
 	public Map<Method, Header> headerMapCache = new ConcurrentHashMap<>();
 	
-	private static AtomicLong messageId = new AtomicLong(0L);
-	
 	public JdkRpcDynamicProxy(ClientConfig config){
 		this.clientConfig = config;
 		if(!StringUtils.isEmpty(config.getRegistryAddress())){
@@ -48,7 +46,6 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 				e.printStackTrace();
 			}
 		}
-		
 		serializeType = SerializeType.getSerializeTypeByName(clientConfig.getSerializeType());
 		compressType = CompressType.getCompressTypeByName(clientConfig.getCompressType());
 	}
@@ -60,14 +57,9 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 		req.setMethodName(method.getName());
 		req.setArgs(args);
 		
-		Header header = headerMapCache.get(method);
-		if (header == null) {
-            header = Header.HeaderMaker.newMaker()
-                    .make();
-            header.setExtend(RpcUtil.getExtend(serializeType, compressType));
-            headerMapCache.put(method, header);
-        }
-		header.setMessageID(messageId.incrementAndGet());
+		Header header = Header.HeaderMaker.newMaker()
+                .make();
+		header.setExtend(RpcUtil.getExtend(serializeType, compressType));
 		Message<Request> message = new Message<Request>(header, req);
 		ResponseFuture<?> future = client.request(message, clientConfig.getConnectionTimeout());
 		Response resp =  (Response)future.getPromise().await();

@@ -49,7 +49,7 @@ public class NettyDecoder extends ByteToMessageDecoder {
             req = serialization.deserialize(compress.unCompress(payload), MessageType.getMessageTypeByExtend(extend));
         }
         Header header = new Header(magic, version, extend, messageID, size);
-        Message<?> message = new Message<>(header, req);
+        Message<?> message = new Message<>(header, req, header.getMessageID());
         list.add(message);
     }
 }

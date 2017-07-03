@@ -16,8 +16,13 @@ public class Message<T> {
     }
 
     public Message(Header header, T content) {
+        this(header,content, id.getAndIncrement());
+    }
+    
+    public Message(Header header, T content, long messageId) {
         this.content = content;
         this.header = header;
+        this.header.setMessageID(messageId);
     }
 
     public Header getHeader() {

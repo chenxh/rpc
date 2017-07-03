@@ -1,13 +1,17 @@
 package com.chencoder.rpc.core.transport.netty;
 
+import java.lang.reflect.Field;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+import sun.misc.Unsafe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.bean.Message;
+import com.chencoder.rpc.common.bean.RpcException;
 import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.core.transport.Client;
 import com.chencoder.rpc.core.transport.ResponseFuture;
@@ -21,6 +25,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import sun.misc.Unsafe;
 
 /**
  */
@@ -32,6 +37,23 @@ public class NettyClient implements Client {
     protected EventLoopGroup group;
     private String host;
     private int port;
+    
+    private ReentrantLock lock = new ReentrantLock();
+    
+    private final static Unsafe unsafe;
+    private static final long stateOffset;
+    static {
+    	try {
+    		
+    		Field field = Unsafe.class.getDeclaredField("theUnsafe");  
+            field.setAccessible(true);  
+            unsafe = (Unsafe)field.get(null);
+			stateOffset = unsafe.objectFieldOffset(NettyClient.class.getDeclaredField("state"));
+		} catch (Exception e) {
+			throw new Error(e);
+		}
+    }
+    
     
     enum State{
     	UN_CONN(1),CONNING(2),CONNECTED(3);
@@ -49,14 +71,18 @@ public class NettyClient implements Client {
     }
     private volatile int state = State.UN_CONN.getValue();
     
-    private ChannelFuture channelFuture;
+    private volatile ChannelFuture channelFuture;
 
     public NettyClient(ServerInfo info) throws InterruptedException {
         this.host = info.getHost();
         this.port = info.getPort();
-        init();
-        Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(
-                new TimeoutMonitor("timeout_monitor_" + host + "_" + port), 100, 100, TimeUnit.MILLISECONDS);
+        try{
+        	init();
+        }catch(Throwable e){
+        	throw new RpcException("init netty client faliry :" + e.getMessage());
+        }
+/*        Executors.newScheduledThreadPool(1).scheduleWithFixedDelay(
+                new TimeoutMonitor("timeout_monitor_" + host + "_" + port), 100, 100, TimeUnit.MILLISECONDS);*/
     }
 
     private void init() throws InterruptedException {
@@ -72,7 +98,7 @@ public class NettyClient implements Client {
                         initClientChannel(ch);
                     }
                 });
-
+        connect();
     }
 
     public void initClientChannel(SocketChannel ch) {
@@ -82,24 +108,30 @@ public class NettyClient implements Client {
     }
 
     public void connect() {
-    	if(state == State.UN_CONN.getValue()){
-            ChannelFuture connect = b.connect(host, port);
-            connect.awaitUninterruptibly();
-            channelFuture =  connect;
-            state = State.CONNECTED.getValue();
+    	int stat = state;
+    	if(stat == State.UN_CONN.getValue() && changeState(stat, State.CONNING.getValue())){
+    		 long start = System.currentTimeMillis();
+    		 ChannelFuture connect = b.connect(host, port);
+    		 channelFuture = connect.awaitUninterruptibly();
+    	     state = State.CONNECTED.getValue();
     	}else if(state == State.CONNING.getValue()){
     		while(state == State.CONNING.getValue()){
-    			if(isActive()){
-    				return;
+    			if(state == State.CONNECTED.getValue()){
+    				break;
     			}
     		}
     	}
+    }
+    
+    private boolean changeState(int srcState, int destState){
+    	return unsafe.compareAndSwapInt(this, stateOffset , srcState, destState);
     }
 
     @Override
     public void close() {
         group.shutdownGracefully();
     }
+    
 
     class TimeoutMonitor implements Runnable {
         private String name;
@@ -113,7 +145,7 @@ public class NettyClient implements Client {
             for (Entry<Long, ResponseFuture<?>> entry : ResponseFuture.CALLBACKS.entrySet()) {
                 try {
                     ResponseFuture future = entry.getValue();
-                    if (future.getCreateTime() + future.getTimeOut() < currentTime) {
+                    if (future.getTimeOut() > 0 && future.getCreateTime() + future.getTimeOut() < currentTime) {
                         // timeout: remove from callback list, and then cancel
                     	ResponseFuture.CALLBACKS.remove(entry.getKey());
                     }
