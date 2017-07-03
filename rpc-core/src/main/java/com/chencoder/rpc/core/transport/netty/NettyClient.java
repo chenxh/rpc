@@ -2,10 +2,7 @@ package com.chencoder.rpc.core.transport.netty;
 
 import java.lang.reflect.Field;
 import java.util.Map.Entry;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import sun.misc.Unsafe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +35,6 @@ public class NettyClient implements Client {
     private String host;
     private int port;
     
-    private ReentrantLock lock = new ReentrantLock();
     
     private final static Unsafe unsafe;
     private static final long stateOffset;
@@ -110,7 +106,6 @@ public class NettyClient implements Client {
     public void connect() {
     	int stat = state;
     	if(stat == State.UN_CONN.getValue() && changeState(stat, State.CONNING.getValue())){
-    		 long start = System.currentTimeMillis();
     		 ChannelFuture connect = b.connect(host, port);
     		 channelFuture = connect.awaitUninterruptibly();
     	     state = State.CONNECTED.getValue();
@@ -170,10 +165,6 @@ public class NettyClient implements Client {
 	
 	public boolean isConnect(){
 		return channelFuture != null && channelFuture.channel().isActive();
-	}
-	
-	public boolean isActive(){
-		return channelFuture != null && channelFuture.channel().isActive() && channelFuture.channel().isOpen();
 	}
 
 }
