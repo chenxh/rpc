@@ -1,5 +1,9 @@
 package com.chencoder.rpc.common.config;
 
+import java.util.List;
+
+import com.chencoder.rpc.common.interceptor.InvokerInterceptor;
+
 public class ClientConfig {
 	
 	private String serviceName;
@@ -19,6 +23,8 @@ public class ClientConfig {
     private String serializeType;
     
     private String compressType; 
+    
+    private List<InvokerInterceptor> interceptors;
 
 	public String getServiceName() {
 		return serviceName;
@@ -90,6 +96,14 @@ public class ClientConfig {
 
 	public void setSerializeType(String serializeType) {
 		this.serializeType = serializeType;
+	}
+
+	public List<InvokerInterceptor> getInterceptors() {
+		return interceptors;
+	}
+
+	public void setInterceptors(List<InvokerInterceptor> interceptors) {
+		this.interceptors = interceptors;
 	}
 
 

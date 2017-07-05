@@ -4,7 +4,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,8 +30,6 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 	private SerializeType serializeType;
 	
 	private CompressType compressType;
-	
-	public Map<Method, Header> headerMapCache = new ConcurrentHashMap<>();
 	
 	public JdkRpcDynamicProxy(ClientConfig config){
 		this.clientConfig = config;

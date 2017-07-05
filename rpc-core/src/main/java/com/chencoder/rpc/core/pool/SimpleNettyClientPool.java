@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.chencoder.rpc.common.bean.RpcException;
 import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.core.transport.netty.NettyClient;
 
@@ -20,7 +21,7 @@ public class SimpleNettyClientPool {
 	private ReentrantLock lock = new ReentrantLock();
 
 	public SimpleNettyClientPool(){
-		
+		this(DEFAULT_SIZE_PER_KEY);
 	}
 	
 	public SimpleNettyClientPool(int maxPoolSize){
@@ -35,13 +36,19 @@ public class SimpleNettyClientPool {
 		int index = integer.getAndIncrement() % maxPoolSize;
 		NettyClient v = list[index];
 		if(v == null){
-			lock.lock();
-			NettyClient v2 = list[index];
-			if(v2 == null){
-				list[index] = new NettyClient(key);
+			try{
+				lock.lock();
+				NettyClient v2 = list[index];
+				if(v2 == null){
+					list[index] = new NettyClient(key);
+				}
+				return list[index];
+			}catch(Exception e){
+				throw new RpcException("create NettyClient failed: " + e.getMessage());
+			}finally{
+				lock.unlock();
 			}
-			lock.unlock();
-			return list[index];
+			
 		}else{
 			return v;
 		}

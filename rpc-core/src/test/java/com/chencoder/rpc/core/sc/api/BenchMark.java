@@ -15,9 +15,9 @@ public class BenchMark {
 	 private final static Logger LOGGER = LoggerFactory.getLogger(BenchMark.class);
 	public static void main(String[] args) {
 		ClientConfig config = new ClientConfig();
-		//config.setRemoteIp("127.0.0.1");
-		//config.setRemotePort(1121);
-		config.setRegistryAddress("localhost:2181");
+		config.setRemoteIp("127.0.0.1");
+		config.setRemotePort(1121);
+		//config.setRegistryAddress("localhost:2181");
 		config.setServiceName(DemoService.class.getName());
 		config.setCompressType("None");
 		config.setSerializeType("Kyro");
@@ -26,7 +26,7 @@ public class BenchMark {
 		
 		ExecutorService pool = Executors.newFixedThreadPool(10);
 		try{
-			int size = 10000;
+			int size = 100000;
 			long start = System.currentTimeMillis();
 			CountDownLatch latch = new CountDownLatch(size);
 			for(int i=0; i< size; i++){
