@@ -22,6 +22,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import sun.misc.Unsafe;
 
 /**
@@ -83,7 +84,7 @@ public class NettyClient implements Client {
 
     private void init() throws InterruptedException {
         b = new Bootstrap();
-        group = new NioEventLoopGroup(4);
+        group = new NioEventLoopGroup(2);
         b.group(group)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .option(ChannelOption.SO_KEEPALIVE, true)
@@ -98,6 +99,8 @@ public class NettyClient implements Client {
     }
 
     public void initClientChannel(SocketChannel ch) {
+    	ch.pipeline().addLast("idleStateHandler", new IdleStateHandler(10, 0, 0) );
+    	ch.pipeline().addLast("heartBeatHandler", new HeartBeatHandler());
         ch.pipeline().addLast("encode", new NettyEncoder());
         ch.pipeline().addLast("decode", new NettyDecoder());
         ch.pipeline().addLast("handler", new NettyClientHandler());

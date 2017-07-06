@@ -10,7 +10,7 @@ import com.chencoder.rpc.core.transport.netty.NettyClient;
 
 public class SimpleNettyClientPool {
 	
-	public static final int DEFAULT_SIZE_PER_KEY = 3;
+	public static final int DEFAULT_SIZE_PER_KEY = 1;
 	
 	private ConcurrentHashMap<ServerInfo, NettyClient[]> poolMap = new ConcurrentHashMap<ServerInfo, NettyClient[]>();
 	

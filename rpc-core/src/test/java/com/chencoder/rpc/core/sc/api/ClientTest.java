@@ -18,10 +18,19 @@ public class ClientTest {
 		config.setSerializeType("Kyro");
 		JdkRpcDynamicProxy proxy =  new JdkRpcDynamicProxy(config);
 		DemoService demoService = (DemoService) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{DemoService.class}, proxy);
-		System.out.println(demoService.testString());
-		System.out.println(demoService.testArgs("nihao"));
-		demoService.testVoid();
-		System.out.println("end");
+		//System.out.println(demoService.testString());
+		//System.out.println(demoService.testArgs("nihao"));
+		//demoService.testVoid();
+		//System.out.println("end");
+		
+		try {
+			while(true){
+				Thread.sleep(20*1000);
+				demoService.testVoid();
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
