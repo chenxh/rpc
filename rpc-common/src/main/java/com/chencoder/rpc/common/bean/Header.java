@@ -134,7 +134,6 @@ public class Header {
 
 	public static Header newPingHeader() {
 		return new Header(Constants.MAGIC, ProtoVersion.VERSION_1.getVersion(), (byte)Constants.DEF_PING_CODE);
-
 	}
 
 

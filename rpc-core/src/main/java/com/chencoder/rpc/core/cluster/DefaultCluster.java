@@ -34,7 +34,7 @@ public class DefaultCluster implements Cluster{
 	
 	private LoadBalance loadBalance;
 	
-	private SimpleNettyClientPool pool = new SimpleNettyClientPool(4);
+	private SimpleNettyClientPool pool = new SimpleNettyClientPool();
 	
 	public DefaultCluster(ClientConfig config){
 		this.config = config;
