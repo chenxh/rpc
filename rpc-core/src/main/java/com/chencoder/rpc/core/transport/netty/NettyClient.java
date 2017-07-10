@@ -2,7 +2,6 @@ package com.chencoder.rpc.core.transport.netty;
 
 import java.lang.reflect.Field;
 import java.util.Map.Entry;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.chencoder.rpc.common.bean.Message;
 import com.chencoder.rpc.common.bean.RpcException;
 import com.chencoder.rpc.common.bean.ServerInfo;
-import com.chencoder.rpc.core.transport.Client;
+import com.chencoder.rpc.core.transport.TransportClient;
 import com.chencoder.rpc.core.transport.ResponseFuture;
 import com.chencoder.rpc.core.transport.client.Promise;
 
@@ -27,7 +26,7 @@ import sun.misc.Unsafe;
 
 /**
  */
-public class NettyClient implements Client {
+public class NettyClient implements TransportClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NettyClient.class);
 

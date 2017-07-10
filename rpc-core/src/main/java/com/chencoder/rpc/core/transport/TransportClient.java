@@ -2,7 +2,7 @@ package com.chencoder.rpc.core.transport;
 
 import com.chencoder.rpc.common.bean.Message;
 
-public interface Client {
+public interface TransportClient {
 	
 	void connect();
 	

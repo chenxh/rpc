@@ -13,13 +13,18 @@ import com.chencoder.rpc.common.bean.Request;
 import com.chencoder.rpc.common.bean.Response;
 import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.common.config.ClientConfig;
+import com.chencoder.rpc.common.config.RpcRuntimeConfig;
 import com.chencoder.rpc.common.util.RpcUtil;
+import com.chencoder.rpc.core.RpcInvoker;
 import com.chencoder.rpc.core.cluster.DefaultCluster;
+import com.chencoder.rpc.core.invoker.ClusterClientInvoker;
+import com.chencoder.rpc.core.invoker.SingleClientInvoker;
 import com.chencoder.rpc.core.transport.TransportClient;
+import com.chencoder.rpc.core.transport.TransportClientFactory;
 import com.chencoder.rpc.core.transport.ResponseFuture;
 import com.chencoder.rpc.core.transport.netty.NettyClient;
 
-public class JdkRpcDynamicProxy implements InvocationHandler{
+public class JdkRpcDynamicProxy2 implements InvocationHandler{
 	
 	private ClientConfig clientConfig;
 	
@@ -29,17 +34,17 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 	
 	private CompressType compressType;
 	
-	public JdkRpcDynamicProxy(ClientConfig config){
+	private RpcInvoker invoker;
+	
+	public JdkRpcDynamicProxy2(ClientConfig config){
 		this.clientConfig = config;
 		if(!StringUtils.isEmpty(config.getRegistryAddress())){
-			client = new DefaultCluster(config);
+			//client = new DefaultCluster(config);
+			invoker = new ClusterClientInvoker(config);
 		}else{
-			ServerInfo serverInfo = new ServerInfo(config.getRemoteIp(), config.getRemotePort());
-			try {
-				client = new NettyClient(serverInfo);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			invoker = new SingleClientInvoker(
+					TransportClientFactory.newTransportClient(config),
+					config.newRuntimeConfig());
 		}
 		serializeType = SerializeType.getSerializeTypeByName(clientConfig.getSerializeType());
 		compressType = CompressType.getCompressTypeByName(clientConfig.getCompressType());
@@ -56,9 +61,10 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
                 .make();
 		header.setExtend(RpcUtil.getExtend(serializeType, compressType));
 		Message<Request> message = new Message<Request>(header, req);
-		ResponseFuture<?> future = client.request(message, clientConfig.getConnectionTimeout());
+		return invoker.invoke(message, null);
+		/*ResponseFuture<?> future = invoker.request(message, clientConfig.getConnectionTimeout());
 		Response resp =  (Response)future.getPromise().await();
-		return resp.getResult();
+		return resp.getResult();*/
 	}
 
 }

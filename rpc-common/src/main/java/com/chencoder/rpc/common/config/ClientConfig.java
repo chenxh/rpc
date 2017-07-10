@@ -24,6 +24,10 @@ public class ClientConfig {
     
     private String compressType; 
     
+    private long timeOut = 0;
+    
+    private int retry = 0;
+    
     private List<InvokerInterceptor> interceptors;
 
 	public String getServiceName() {
@@ -104,6 +108,18 @@ public class ClientConfig {
 
 	public void setInterceptors(List<InvokerInterceptor> interceptors) {
 		this.interceptors = interceptors;
+	}
+
+	public long getTimeOut() {
+		return timeOut;
+	}
+
+	public void setTimeOut(long timeOut) {
+		this.timeOut = timeOut;
+	}
+
+	public RpcRuntimeConfig newRuntimeConfig() {
+		return new RpcRuntimeConfig(this.timeOut, this.retry) ;
 	}
 
 
