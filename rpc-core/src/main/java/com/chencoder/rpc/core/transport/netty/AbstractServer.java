@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.config.ServerConfig;
-import com.chencoder.rpc.core.transport.Server;
+import com.chencoder.rpc.core.transport.TransportServer;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -21,9 +21,8 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 /**
- * Created by Dempe on 2016/12/22.
  */
-public abstract class AbstractServer implements Server{
+public abstract class AbstractServer implements TransportServer{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractServer.class);
 

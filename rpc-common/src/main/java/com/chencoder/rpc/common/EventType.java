@@ -1,7 +1,5 @@
 package com.chencoder.rpc.common;
 
-/**
- */
 public enum EventType {
 
     NORMAL((byte) 0), HEARTBEAT((byte) (1 << 6));

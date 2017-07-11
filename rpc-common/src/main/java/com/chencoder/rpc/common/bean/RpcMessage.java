@@ -4,23 +4,20 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  */
-public class Message<T> {
+public class RpcMessage {
 
     private Header header;
-
-    private T content;
     
     private final static AtomicLong id = new AtomicLong(0);
 
-    public Message() {
+    public RpcMessage() {
     }
 
-    public Message(Header header, T content) {
-        this(header,content, id.getAndIncrement());
+    public RpcMessage(Header header) {
+        this(header, id.getAndIncrement());
     }
     
-    public Message(Header header, T content, long messageId) {
-        this.content = content;
+    public RpcMessage(Header header, long messageId) {
         this.header = header;
         this.header.setMessageID(messageId);
     }
@@ -32,12 +29,8 @@ public class Message<T> {
     public void setHeader(Header header) {
         this.header = header;
     }
-
-    public T getContent() {
-        return content;
-    }
-
-    public void setContent(T content) {
-        this.content = content;
+    
+    public Object getContent(){
+    	return null;
     }
 }

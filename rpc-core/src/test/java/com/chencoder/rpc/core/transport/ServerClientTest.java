@@ -2,7 +2,8 @@ package com.chencoder.rpc.core.transport;
 
 import com.chencoder.rpc.common.EventType;
 import com.chencoder.rpc.common.bean.Header;
-import com.chencoder.rpc.common.bean.Message;
+import com.chencoder.rpc.common.bean.RpcMessage;
+import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.common.config.ServerConfig;
 import com.chencoder.rpc.core.transport.netty.NettyClient;
@@ -39,10 +40,10 @@ public class ServerClientTest {
 		}
 	}
 	
-	private static Message createHearbeatMsg(){
+	private static RpcRequest createHearbeatMsg(){
 		Header heartBeatHeader = Header.HeaderMaker.newMaker().make();
         heartBeatHeader.setExtend(EventType.HEARTBEAT.getValue());
-        Message message = new Message(heartBeatHeader, null);
+        RpcRequest message = new RpcRequest(heartBeatHeader, null);
         return message;
 	}
 

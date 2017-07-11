@@ -1,6 +1,6 @@
 package com.chencoder.rpc.core.transport;
 
-import com.chencoder.rpc.common.bean.Message;
+import com.chencoder.rpc.common.bean.RpcRequest;
 
 public interface TransportClient {
 	
@@ -8,6 +8,6 @@ public interface TransportClient {
 	
 	void close();
 	
-	ResponseFuture<?> request(Message message, long timeout);
+	ResponseFuture<?> request(RpcRequest message, long timeout);
 
 }

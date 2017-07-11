@@ -4,7 +4,7 @@ package com.chencoder.rpc.core.transport.netty;
 import com.chencoder.rpc.common.CompressType;
 import com.chencoder.rpc.common.SerializeType;
 import com.chencoder.rpc.common.bean.Header;
-import com.chencoder.rpc.common.bean.Message;
+import com.chencoder.rpc.common.bean.RpcMessage;
 import com.chencoder.rpc.common.compress.Compress;
 import com.chencoder.rpc.common.serialize.Serialization;
 import com.chencoder.rpc.common.EventType;
@@ -15,10 +15,10 @@ import io.netty.handler.codec.MessageToByteEncoder;
 
 /**
  */
-public class NettyEncoder extends MessageToByteEncoder<Message> {
+public class NettyEncoder extends MessageToByteEncoder<RpcMessage> {
 
     @Override
-    protected void encode(ChannelHandlerContext channelHandlerContext, Message message, ByteBuf byteBuf) throws Exception {
+    protected void encode(ChannelHandlerContext channelHandlerContext, RpcMessage message, ByteBuf byteBuf) throws Exception {
         Header header = message.getHeader();
         byteBuf.writeShort(header.getMagic());
         byteBuf.writeByte(header.getVersion());

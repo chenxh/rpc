@@ -8,7 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.LoadBalanceType;
-import com.chencoder.rpc.common.bean.Message;
+import com.chencoder.rpc.common.bean.RpcMessage;
+import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.common.bean.MetaInfo;
 import com.chencoder.rpc.common.bean.RpcException;
 import com.chencoder.rpc.common.bean.ServerInfo;
@@ -69,7 +70,7 @@ public class DefaultCluster implements Cluster{
 	}
 
 	@Override
-	public ResponseFuture<?> request(Message message, long timeout) {
+	public ResponseFuture<?> request(RpcRequest message, long timeout) {
 		try {
 			long start = System.currentTimeMillis();
 			Collection<ServiceInstance<MetaInfo>> servers = discovery.queryForInstances(serviceName);

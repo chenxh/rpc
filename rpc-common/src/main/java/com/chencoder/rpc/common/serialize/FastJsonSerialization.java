@@ -8,9 +8,6 @@ import com.alibaba.fastjson.serializer.SerializeWriter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.chencoder.rpc.common.bean.Request;
 
-/**
- * Created by Dempe on 2016/12/7.
- */
 public class FastJsonSerialization implements Serialization {
 
     @Override

@@ -6,14 +6,15 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.chencoder.rpc.common.bean.Message;
 import com.chencoder.rpc.common.bean.RpcException;
+import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.common.bean.ServerInfo;
-import com.chencoder.rpc.core.transport.TransportClient;
 import com.chencoder.rpc.core.transport.ResponseFuture;
+import com.chencoder.rpc.core.transport.TransportClient;
 import com.chencoder.rpc.core.transport.client.Promise;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -67,7 +68,7 @@ public class NettyClient implements TransportClient {
     }
     private volatile int state = State.UN_CONN.getValue();
     
-    private volatile ChannelFuture channelFuture;
+    private volatile Channel channel;
 
     public NettyClient(ServerInfo info) throws InterruptedException {
         this.host = info.getHost();
@@ -109,7 +110,8 @@ public class NettyClient implements TransportClient {
     	int stat = state;
     	if(stat == State.UN_CONN.getValue() && changeState(stat, State.CONNING.getValue())){
     		 ChannelFuture connect = b.connect(host, port);
-    		 channelFuture = connect.awaitUninterruptibly();
+    		 connect = connect.awaitUninterruptibly();
+    		 channel = connect.channel();
     	     state = State.CONNECTED.getValue();
     	}else if(state == State.CONNING.getValue()){
     		while(state == State.CONNING.getValue()){
@@ -155,18 +157,22 @@ public class NettyClient implements TransportClient {
     }
 
 	@Override
-	public ResponseFuture<?> request(Message message, long timeout) {
+	public ResponseFuture<?> request(RpcRequest message, long timeout) {
 		if(state != State.CONNECTED.getValue()){
 			connect();
 		}
+/*		if(!isConnect()){
+			state = State.UN_CONN.getValue();
+			connect();
+		}*/
 		ResponseFuture responseFuture = new ResponseFuture(System.currentTimeMillis(), timeout, message, new Promise());
 		ResponseFuture.CALLBACKS.putIfAbsent(message.getHeader().getMessageID(), responseFuture);
-		channelFuture.channel().writeAndFlush(message);
+		channel.writeAndFlush(message);
 		return responseFuture;
 	}
 	
 	public boolean isConnect(){
-		return channelFuture != null && channelFuture.channel().isActive();
+		return channel != null && channel.isActive();
 	}
 
 }

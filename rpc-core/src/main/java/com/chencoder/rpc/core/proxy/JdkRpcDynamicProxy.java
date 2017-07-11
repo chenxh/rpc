@@ -8,7 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.chencoder.rpc.common.CompressType;
 import com.chencoder.rpc.common.SerializeType;
 import com.chencoder.rpc.common.bean.Header;
-import com.chencoder.rpc.common.bean.Message;
+import com.chencoder.rpc.common.bean.RpcMessage;
+import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.common.bean.Request;
 import com.chencoder.rpc.common.bean.Response;
 import com.chencoder.rpc.common.bean.ServerInfo;
@@ -55,7 +56,7 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 		Header header = Header.HeaderMaker.newMaker()
                 .make();
 		header.setExtend(RpcUtil.getExtend(serializeType, compressType));
-		Message<Request> message = new Message<Request>(header, req);
+		RpcRequest message = new RpcRequest(header, req);
 		ResponseFuture<?> future = client.request(message, clientConfig.getConnectionTimeout());
 		Response resp =  (Response)future.getPromise().await();
 		return resp.getResult();

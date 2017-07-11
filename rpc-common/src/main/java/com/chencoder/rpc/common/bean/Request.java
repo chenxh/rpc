@@ -5,7 +5,12 @@ import java.util.Arrays;
 
 public class Request implements Serializable {
 
-    private String serviceName;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private String serviceName;
 
     private String methodName;
 

@@ -7,15 +7,6 @@ import com.chencoder.rpc.common.serialize.Hessian2Serialization;
 import com.chencoder.rpc.common.serialize.KryoSerialization;
 import com.chencoder.rpc.common.serialize.Serialization;
 
-/*import com.zhizus.forest.common.codec.serialize.FastJsonSerialization;
-import com.zhizus.forest.common.codec.serialize.Hessian2Serialization;
-import com.zhizus.forest.common.codec.serialize.KryoSerialization;
-import com.zhizus.forest.common.codec.serialize.Serialization;
-import org.apache.commons.lang3.StringUtils;
-*/
-/**
- * Created by Dempe on 2016/12/7.
- */
 public enum SerializeType {
 
     Kyro((byte) 0), Fastjson((byte) 1), Hession2((byte) 2);
@@ -56,4 +47,6 @@ public enum SerializeType {
     }
 
     public final static SerializeType DEFAULT_SERIALIZE_TYPE = SerializeType.Kyro;
+    
+    //public final static KryoSerialization kryoSerialization = new KryoSerialization();
 }

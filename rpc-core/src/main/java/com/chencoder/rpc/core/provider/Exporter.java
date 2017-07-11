@@ -15,11 +15,11 @@ import com.chencoder.rpc.core.registry.impl.ZkServiceDiscovery;
 public class Exporter {
 	
 	private Map<String, DefaultServiceProvider> providers = new ConcurrentHashMap<>();
-	private ServiceDiscovery serviceDiscovery ;
+	private ServiceDiscovery<MetaInfo> serviceDiscovery ;
 	private RegistryConfig registryConfig;
 	
 	public Exporter(RegistryConfig registryConfig){
-		this.registryConfig = registryConfig;
+		this.setRegistryConfig(registryConfig);
 		if(registryConfig != null){
 			ZkServiceDiscovery zkServiceDiscovery = new ZkServiceDiscovery();
 			zkServiceDiscovery.setAddress(registryConfig.getRegistryAddress());
@@ -32,7 +32,7 @@ public class Exporter {
 		}
 	}
 	
-	public void exportService(Class<?> interfaceClass, Object impl, Integer port){
+	public void exportService(Class<?> interfaceClass, Object impl, int port){
 		providers.put(interfaceClass.getName(), new DefaultServiceProvider(interfaceClass, impl));
 		if(serviceDiscovery != null){
 			try {
@@ -50,6 +50,14 @@ public class Exporter {
 	
 	public DefaultServiceProvider getProvider(String serviceName){
 		return providers.get(serviceName);
+	}
+
+	public RegistryConfig getRegistryConfig() {
+		return registryConfig;
+	}
+
+	public void setRegistryConfig(RegistryConfig registryConfig) {
+		this.registryConfig = registryConfig;
 	}
 
 }

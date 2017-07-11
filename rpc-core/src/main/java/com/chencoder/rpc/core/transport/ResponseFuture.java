@@ -2,7 +2,7 @@ package com.chencoder.rpc.core.transport;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.chencoder.rpc.common.bean.Message;
+import com.chencoder.rpc.common.bean.RpcMessage;
 import com.chencoder.rpc.core.transport.client.Promise;
 
 /**
@@ -10,12 +10,12 @@ import com.chencoder.rpc.core.transport.client.Promise;
 public class ResponseFuture<T> {
     private long createTime;
     private long timeOut;
-    private Message request;
+    private RpcMessage request;
     private Promise<T> promise;
     
     public final static ConcurrentHashMap<Long, ResponseFuture<?>> CALLBACKS = new ConcurrentHashMap<>();
 
-    public ResponseFuture(long createTime, long timeOut, Message request, Promise<T> promise) {
+    public ResponseFuture(long createTime, long timeOut, RpcMessage request, Promise<T> promise) {
         this.createTime = createTime;
         this.timeOut = timeOut;
         this.request = request;
@@ -30,11 +30,11 @@ public class ResponseFuture<T> {
         this.timeOut = timeOut;
     }
 
-    public Message getRequest() {
+    public RpcMessage getRequest() {
         return request;
     }
 
-    public void setRequest(Message request) {
+    public void setRequest(RpcMessage request) {
         this.request = request;
     }
 

@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.EventType;
 import com.chencoder.rpc.common.bean.Header;
-import com.chencoder.rpc.common.bean.Message;
+import com.chencoder.rpc.common.bean.RpcMessage;
+import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.core.cluster.DefaultCluster;
 
 import io.netty.channel.ChannelDuplexHandler;
@@ -33,7 +34,7 @@ public class HeartBeatHandler extends ChannelDuplexHandler {
 	private Object getHeartBeatMessage() {
 		Header heartBeatHeader = Header.HeaderMaker.newMaker().make();
 		heartBeatHeader.setExtend(EventType.HEARTBEAT.getValue());
-		return new Message(heartBeatHeader, null);
+		return new RpcRequest(heartBeatHeader, null);
 	}
 
 }

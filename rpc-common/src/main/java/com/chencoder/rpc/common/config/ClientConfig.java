@@ -118,9 +118,12 @@ public class ClientConfig {
 		this.timeOut = timeOut;
 	}
 
-	public RpcRuntimeConfig newRuntimeConfig() {
-		return new RpcRuntimeConfig(this.timeOut, this.retry) ;
+	public int getRetry() {
+		return retry;
 	}
 
+	public void setRetry(int retry) {
+		this.retry = retry;
+	}
 
 }

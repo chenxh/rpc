@@ -10,12 +10,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-/**
- * Created by Dempe on 2016/12/7.
- */
+
 public class KryoSerialization implements Serialization {
-    // kryo非线程安全
-    public final static ThreadLocal<Kryo> kryoThreadMap = new ThreadLocal<Kryo>();
+
+	public final static ThreadLocal<Kryo> kryoThreadMap = new ThreadLocal<Kryo>();
 
     public KryoSerialization() {
         kryoThreadMap.set(new Kryo());

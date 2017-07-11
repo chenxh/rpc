@@ -1,5 +1,5 @@
 package com.chencoder.rpc.core.transport;
 
-public interface Server {
+public interface TransportServer {
 	void start();
 }

@@ -1,6 +1,5 @@
 package com.chencoder.rpc.core.sc.api;
 
-import java.lang.reflect.Proxy;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,22 +8,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.config.ClientConfig;
-import com.chencoder.rpc.core.proxy.JdkRpcDynamicProxy;
+import com.chencoder.rpc.core.RpcClient;
 
 public class BenchMark {
 	 private final static Logger LOGGER = LoggerFactory.getLogger(BenchMark.class);
 	public static void main(String[] args) {
 		ClientConfig config = new ClientConfig();
-		config.setRemoteIp("127.0.0.1");
-		config.setRemotePort(1121);
-		//config.setRegistryAddress("localhost:2181");
+		config.setRegistryAddress("localhost:2181");
+		//config.setRemoteIp("127.0.0.1");
+		//config.setRemotePort(1122);
 		config.setServiceName(DemoService.class.getName());
 		config.setCompressType("None");
 		config.setSerializeType("Kyro");
-		JdkRpcDynamicProxy proxy =  new JdkRpcDynamicProxy(config);
-		DemoService demoService = (DemoService) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{DemoService.class}, proxy);
 		
-		ExecutorService pool = Executors.newFixedThreadPool(10);
+		RpcClient client = new RpcClient(config);
+		DemoService demoService = client.refer(DemoService.class);
+		ExecutorService pool = Executors.newFixedThreadPool(30);
 		try{
 			int size = 100000;
 			long start = System.currentTimeMillis();
