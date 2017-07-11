@@ -16,6 +16,11 @@ public class SingleClientInvoker extends RpcClientInvoker{
 		return client;
 	}
 
+	@Override
+	TransportClient nextBackTransport() {
+		return null;
+	}
+	
 	public void setClient(TransportClient client) {
 		this.client = client;
 	}

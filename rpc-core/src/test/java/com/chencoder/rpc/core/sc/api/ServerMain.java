@@ -11,7 +11,7 @@ public class ServerMain {
 	
 	private void initConfig(){
 		serverConfig = new ServerConfig();
-		serverConfig.setPort(1132);
+		serverConfig.setPort(1134);
 		serverConfig.setSoBacklog(128);
 		serverConfig.setSoKeepAlive(true);
 		serverConfig.setTcpNoDelay(true);

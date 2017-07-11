@@ -9,13 +9,13 @@ import com.chencoder.rpc.common.bean.MetaInfo;
 import com.chencoder.rpc.common.bean.RpcException;
 import com.chencoder.rpc.common.config.RegistryConfig;
 import com.chencoder.rpc.common.util.NetUtils;
-import com.chencoder.rpc.core.registry.ServiceDiscovery;
-import com.chencoder.rpc.core.registry.impl.ZkServiceDiscovery;
+import com.chencoder.rpc.core.registry.RpcServiceDiscovery;
+import com.chencoder.rpc.core.registry.ZkServiceDiscovery;
 
 public class Exporter {
 	
 	private Map<String, DefaultServiceProvider> providers = new ConcurrentHashMap<>();
-	private ServiceDiscovery<MetaInfo> serviceDiscovery ;
+	private RpcServiceDiscovery<MetaInfo> serviceDiscovery ;
 	private RegistryConfig registryConfig;
 	
 	public Exporter(RegistryConfig registryConfig){

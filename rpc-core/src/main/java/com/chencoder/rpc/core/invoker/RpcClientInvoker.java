@@ -30,6 +30,8 @@ public abstract class RpcClientInvoker implements RpcInvoker{
 	}
 	
 	abstract TransportClient getTransportClient();
+	abstract TransportClient nextBackTransport();
+	
 }
 	
 	

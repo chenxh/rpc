@@ -8,13 +8,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.chencoder.rpc.common.bean.MetaInfo;
-import com.chencoder.rpc.core.registry.impl.ZkServiceDiscovery;
 
 import org.junit.Assert;
 
 public class ServiceDiscoveryTest {
 	
-	private static ServiceDiscovery discovery;
 	
 	private static TestingServer zkServer;
 	
@@ -26,7 +24,6 @@ public class ServiceDiscoveryTest {
 			zkServer = new TestingServer(2181);
 			zkServer.start();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -39,13 +36,6 @@ public class ServiceDiscoveryTest {
 		ZkServiceDiscovery zkServiceDiscovery  = new ZkServiceDiscovery();
 		zkServiceDiscovery.setAddress("localhost:2181");
 		zkServiceDiscovery.start();
-		zkServiceDiscovery.subscribe(SERVER_NAME, new AbstractServiceEventListener<MetaInfo>(){
-			@Override
-			public void onRemove(ServiceInstance<MetaInfo> serviceInstance) {
-				System.out.println("serviceInstance removed " + serviceInstance);
-			}
-			
-		});
 		
 		Thread.sleep(1*1000);
 		int serverPort = 2182;

@@ -7,15 +7,7 @@ import java.util.Collection;
 /**
  * Created by Dempe on 2016/12/8.
  */
-public interface ServiceDiscovery<T> {
-
-    void subscribe(String serviceName, AbstractServiceEventListener<T> listener);
-
-    void subscribe(AbstractServiceEventListener<T> listener);
-
-    void unSubscribe(AbstractServiceEventListener<T> listener);
-
-    void unSubscribe(String serviceName, AbstractServiceEventListener<T> listener);
+public interface RpcServiceDiscovery<T> {
 
 
     /**
@@ -25,14 +17,6 @@ public interface ServiceDiscovery<T> {
      * @throws Exception errors
      */
     void registerService(ServiceInstance<T> service) throws Exception;
-
-    /**
-     * Update a service
-     *
-     * @param service service to update
-     * @throws Exception errors
-     */
-    void updateService(ServiceInstance<T> service) throws Exception;
 
     /**
      * Unregister/remove a service instance

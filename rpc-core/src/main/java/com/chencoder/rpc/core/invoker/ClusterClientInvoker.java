@@ -16,8 +16,8 @@ import com.chencoder.rpc.common.cluster.lb.RandomLoadBalance;
 import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.core.cluster.DefaultCluster;
 import com.chencoder.rpc.core.pool.SimpleNettyClientPool;
-import com.chencoder.rpc.core.registry.ServiceDiscovery;
-import com.chencoder.rpc.core.registry.impl.ZkServiceDiscovery;
+import com.chencoder.rpc.core.registry.RpcServiceDiscovery;
+import com.chencoder.rpc.core.registry.ZkServiceDiscovery;
 import com.chencoder.rpc.core.transport.TransportClient;
 import com.google.common.collect.Lists;
 
@@ -27,7 +27,7 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 	
 	private ClientConfig config;
 	
-	private ServiceDiscovery<MetaInfo> discovery;
+	private RpcServiceDiscovery<MetaInfo> discovery;
 	
 	private String serviceName;
 	
@@ -88,6 +88,12 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 		List<ServiceInstance<MetaInfo>> newArrayList = Lists.newArrayList(servers);
 		ServiceInstance<MetaInfo> selected = loadBalance.select(newArrayList);
 		return selected;
+	}
+
+	@Override
+	TransportClient nextBackTransport() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

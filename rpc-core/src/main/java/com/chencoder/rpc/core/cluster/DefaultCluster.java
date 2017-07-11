@@ -17,8 +17,8 @@ import com.chencoder.rpc.common.cluster.lb.LoadBalance;
 import com.chencoder.rpc.common.cluster.lb.RandomLoadBalance;
 import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.core.pool.SimpleNettyClientPool;
-import com.chencoder.rpc.core.registry.ServiceDiscovery;
-import com.chencoder.rpc.core.registry.impl.ZkServiceDiscovery;
+import com.chencoder.rpc.core.registry.RpcServiceDiscovery;
+import com.chencoder.rpc.core.registry.ZkServiceDiscovery;
 import com.chencoder.rpc.core.transport.ResponseFuture;
 import com.chencoder.rpc.core.transport.netty.NettyClient;
 import com.google.common.collect.Lists;
@@ -29,7 +29,7 @@ public class DefaultCluster implements Cluster{
 	
 	private ClientConfig config;
 	
-	private ServiceDiscovery<MetaInfo> discovery;
+	private RpcServiceDiscovery<MetaInfo> discovery;
 	
 	private String serviceName;
 	
