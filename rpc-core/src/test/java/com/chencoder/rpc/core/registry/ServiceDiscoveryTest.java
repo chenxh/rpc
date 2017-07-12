@@ -33,8 +33,7 @@ public class ServiceDiscoveryTest {
 	public void testRegister() throws Exception{
 		
 		
-		ZkServiceDiscovery zkServiceDiscovery  = new ZkServiceDiscovery();
-		zkServiceDiscovery.setAddress("localhost:2181");
+		ZkServiceDiscovery zkServiceDiscovery  = new ZkServiceDiscovery("localhost:2181");
 		zkServiceDiscovery.start();
 		
 		Thread.sleep(1*1000);

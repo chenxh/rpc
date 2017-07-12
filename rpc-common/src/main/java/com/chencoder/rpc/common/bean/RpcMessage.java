@@ -33,4 +33,9 @@ public class RpcMessage {
     public Object getContent(){
     	return null;
     }
+
+	@Override
+	public String toString() {
+		return "RpcMessage [header=" + header + ", getContent()=" + getContent() + "]";
+	}
 }

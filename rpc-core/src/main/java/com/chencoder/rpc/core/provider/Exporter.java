@@ -21,8 +21,7 @@ public class Exporter {
 	public Exporter(RegistryConfig registryConfig){
 		this.setRegistryConfig(registryConfig);
 		if(registryConfig != null){
-			ZkServiceDiscovery zkServiceDiscovery = new ZkServiceDiscovery();
-			zkServiceDiscovery.setAddress(registryConfig.getRegistryAddress());
+			ZkServiceDiscovery zkServiceDiscovery = new ZkServiceDiscovery(registryConfig.getRegistryAddress());
 			try {
 				zkServiceDiscovery.start();
 			} catch (Exception e) {

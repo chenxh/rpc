@@ -1,6 +1,5 @@
 package com.chencoder.rpc.core.registry;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -8,11 +7,9 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.x.discovery.ServiceCache;
-import org.apache.curator.x.discovery.ServiceCacheBuilder;
 import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceInstance;
-import org.apache.curator.x.discovery.ServiceProviderBuilder;
 import org.apache.curator.x.discovery.details.InstanceSerializer;
 import org.apache.curator.x.discovery.details.JsonInstanceSerializer;
 
@@ -30,6 +27,11 @@ public class ZkServiceDiscovery implements RpcServiceDiscovery<MetaInfo> {
     private String address = "localhost:2181";
     
     private final static ConcurrentHashMap<String, ServiceCache<MetaInfo>> cacheMap = new ConcurrentHashMap<String, ServiceCache<MetaInfo>>(); 
+    
+    
+    public ZkServiceDiscovery(String address){
+    	setAddress(address);
+    }
 
     public void start() throws Exception {
         CuratorFramework client = CuratorFrameworkFactory.newClient(address, new ExponentialBackoffRetry(1000, 3));

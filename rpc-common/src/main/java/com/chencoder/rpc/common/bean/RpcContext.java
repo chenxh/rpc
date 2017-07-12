@@ -3,7 +3,6 @@ package com.chencoder.rpc.common.bean;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Future;
 
 
 /**
@@ -31,8 +30,7 @@ public final class RpcContext {
 	private long                timout;
 	private boolean             oneway;
 	private boolean             async;
-	private Future<?>           future;
-	
+	private int 				retry;
 	
 	public RpcContext() {
 		attachments = new HashMap<String, String>();
@@ -95,16 +93,6 @@ public final class RpcContext {
     	return attachments.get(key);
     }
     
-    /**
-     * Get future object for asynchronous invocation.
-     * 
-     * @return future instance.
-     */
-	@SuppressWarnings("unchecked")
-	public <T> Future<T> getFuture() {
-        return (Future<T>) future;
-    }
-
 
 	public InetSocketAddress getServerAddress() {
 		return serverAddress;
@@ -153,6 +141,16 @@ public final class RpcContext {
 
 	public void setAsync(boolean async) {
 		this.async = async;
+	}
+
+
+	public int getRetry() {
+		return retry;
+	}
+
+
+	public void setRetry(int retry) {
+		this.retry = retry;
 	}
 
 }

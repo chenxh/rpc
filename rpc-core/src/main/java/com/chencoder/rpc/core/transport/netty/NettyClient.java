@@ -36,6 +36,8 @@ public class NettyClient implements TransportClient {
     private String host;
     private int port;
     
+    private ServerInfo serverInfo;
+    
     
     private final static Unsafe unsafe;
     private static final long stateOffset;
@@ -73,6 +75,7 @@ public class NettyClient implements TransportClient {
     public NettyClient(ServerInfo info) throws InterruptedException {
         this.host = info.getHost();
         this.port = info.getPort();
+        this.serverInfo = info;
         try{
         	init();
         }catch(Throwable e){
@@ -107,6 +110,9 @@ public class NettyClient implements TransportClient {
     }
 
     public void connect() {
+    	if(isConnect()){
+    		return ;
+    	}
     	int stat = state;
     	if(stat == State.UN_CONN.getValue() && changeState(stat, State.CONNING.getValue())){
     		 ChannelFuture connect = b.connect(host, port);
@@ -173,6 +179,11 @@ public class NettyClient implements TransportClient {
 	
 	public boolean isConnect(){
 		return channel != null && channel.isActive();
+	}
+
+	@Override
+	public ServerInfo getServerInfo() {
+		return serverInfo;
 	}
 
 }

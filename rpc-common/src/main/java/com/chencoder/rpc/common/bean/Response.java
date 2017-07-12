@@ -4,12 +4,14 @@ package com.chencoder.rpc.common.bean;
 
 import java.io.Serializable;
 
-/**
- * Created by Dempe on 2016/12/7.
- */
 public class Response implements Serializable {
 
-    private int code = 0;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private int code = 0;
 
     private String errMsg = "";
 

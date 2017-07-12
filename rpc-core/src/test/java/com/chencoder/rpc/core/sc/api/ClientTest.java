@@ -13,7 +13,7 @@ public class ClientTest {
 		//config.setRemotePort(1122);
 		config.setServiceName(DemoService.class.getName());
 		config.setCompressType("None");
-		config.setSerializeType("Kryo");
+		config.setSerializeType("Kyro");
 		
 		RpcClient client = new RpcClient(config);
 		DemoService demoService = client.refer(DemoService.class);

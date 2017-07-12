@@ -17,8 +17,7 @@ public class SingleClientInvoker extends RpcClientInvoker{
 	}
 
 	@Override
-	TransportClient nextBackTransport() {
-		return null;
+	void addFailedClient(TransportClient client) {
 	}
 	
 	public void setClient(TransportClient client) {

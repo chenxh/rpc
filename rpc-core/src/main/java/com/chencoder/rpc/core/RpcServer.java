@@ -14,6 +14,8 @@ public class RpcServer {
 	private Exporter exporter = null;
 	
 	private TransportServer transportServer = null;
+	
+	private RpcProcessor processor = new DefaultRpcProcessor();
 
 	public RpcServer(ServerConfig config){
 		setConfig(config);
@@ -24,14 +26,15 @@ public class RpcServer {
 		exporter = new Exporter(registryConfig);
 	}
 	
-	public <T> void exportService(Class<T> serviceClass, T implObject){			
+	public <T> void export(Class<T> serviceClass, T implObject){			
 		if(exporter != null)
 			exporter.exportService(serviceClass, implObject, config.getPort());
+		processor.addServiceProvider(serviceClass, implObject);
 	}
 	
 	public void startServer(){
 		try {
-			transportServer = TransportServerFactory.newTransportServer(config, exporter);
+			transportServer = TransportServerFactory.newTransportServer(config, processor);
 			transportServer.start();
 		} catch (InterruptedException e) {
 			throw new RpcException(e);

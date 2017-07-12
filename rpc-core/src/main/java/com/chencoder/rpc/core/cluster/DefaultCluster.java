@@ -44,8 +44,7 @@ public class DefaultCluster implements Cluster{
 	}
 	
 	protected void init() {
-		ZkServiceDiscovery zk = new ZkServiceDiscovery();
-		zk.setAddress(config.getRegistryAddress());
+		ZkServiceDiscovery zk = new ZkServiceDiscovery(config.getRegistryAddress());
 		try {
 			zk.start();
 		} catch (Exception e) {
@@ -99,6 +98,11 @@ public class DefaultCluster implements Cluster{
 		List<ServiceInstance<MetaInfo>> newArrayList = Lists.newArrayList(servers);
 		ServiceInstance<MetaInfo> selected = loadBalance.select(newArrayList);
 		return selected;
+	}
+
+	@Override
+	public ServerInfo getServerInfo() {
+		return null;
 	}
 
 }

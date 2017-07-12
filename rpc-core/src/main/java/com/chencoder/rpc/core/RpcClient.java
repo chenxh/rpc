@@ -4,8 +4,6 @@ import java.lang.reflect.Proxy;
 
 import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.core.proxy.JdkRpcDynamicProxy;
-import com.chencoder.rpc.core.proxy.JdkRpcDynamicProxy2;
-import com.chencoder.rpc.core.sc.api.DemoService;
 
 public class RpcClient {
 	
@@ -16,8 +14,8 @@ public class RpcClient {
 	}
 	
 	public <T> T refer(Class<T> clazz){
-		JdkRpcDynamicProxy2 proxy =  new JdkRpcDynamicProxy2(config);
-		return  (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{DemoService.class}, proxy);
+		JdkRpcDynamicProxy proxy =  new JdkRpcDynamicProxy(config);
+		return  (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{clazz}, proxy);
 	}
 
 	public ClientConfig getConfig() {
@@ -27,9 +25,5 @@ public class RpcClient {
 	public void setConfig(ClientConfig config) {
 		this.config = config;
 	}
-	
-	
-	
-	
 	
 }

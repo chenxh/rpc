@@ -25,7 +25,7 @@ public class ServerMain {
 	public void start(){
 		initConfig();
 		RpcServer server = new RpcServer(serverConfig, registryConfig);
-		server.exportService(DemoService.class, new DemoServiceImpl());
+		server.export(DemoService.class, new DemoServiceImpl());
 		server.startServer();
 	}
 	

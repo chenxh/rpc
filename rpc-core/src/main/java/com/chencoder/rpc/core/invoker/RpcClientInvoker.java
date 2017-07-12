@@ -19,18 +19,24 @@ public abstract class RpcClientInvoker implements RpcInvoker{
 		if(!(message instanceof RpcRequest)){
 			throw new UnsupportedOperationException();
 		}
-		try {
-			TransportClient client =  getTransportClient();
-			//TODO:TIMEOUT
-			ResponseFuture<?> resp = client.request((RpcRequest)message, RpcContext.getContext().getTimout());
-			return resp.getPromise().await();
-		} catch (Exception e) {
-			throw new RpcException(e);
+		RpcContext context = RpcContext.getContext();
+		int retryTimes = context.getRetry()==0?1:context.getRetry();
+		TransportClient client = null;
+		for(int i=0; i<retryTimes; i++){
+			try {
+				client =  getTransportClient();
+				ResponseFuture<?> resp = client.request((RpcRequest)message, context.getTimout());
+				return resp.getPromise().await();
+			} catch (Throwable e) {
+				addFailedClient(client);
+			}
 		}
+		
+		throw new RpcException("remote call[" + message + "] failed after " + context.getRetry() + " times retry");
 	}
 	
 	abstract TransportClient getTransportClient();
-	abstract TransportClient nextBackTransport();
+	abstract void addFailedClient(TransportClient client);
 	
 }
 	

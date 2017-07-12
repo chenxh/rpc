@@ -35,6 +35,8 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 	
 	private SimpleNettyClientPool pool = new SimpleNettyClientPool();
 	
+	private List<ServerInfo> fails = Lists.newArrayList();
+	
 	public ClusterClientInvoker(){
 		
 	}
@@ -69,8 +71,7 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 
 	
 	protected void init() {
-		ZkServiceDiscovery zk = new ZkServiceDiscovery();
-		zk.setAddress(config.getRegistryAddress());
+		ZkServiceDiscovery zk = new ZkServiceDiscovery(config.getRegistryAddress());
 		try {
 			zk.start();
 		} catch (Exception e) {
@@ -91,9 +92,8 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 	}
 
 	@Override
-	TransportClient nextBackTransport() {
-		// TODO Auto-generated method stub
-		return null;
+	void addFailedClient(TransportClient client) {
+		fails.add(client.getServerInfo());
 	}
 
 }
