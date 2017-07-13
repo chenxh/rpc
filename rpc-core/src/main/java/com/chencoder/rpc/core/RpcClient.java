@@ -13,6 +13,7 @@ public class RpcClient {
 		setConfig(config);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <T> T refer(Class<T> clazz){
 		JdkRpcDynamicProxy proxy =  new JdkRpcDynamicProxy(config);
 		return  (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{clazz}, proxy);

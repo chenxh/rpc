@@ -2,9 +2,6 @@ package com.chencoder.rpc.common.compress;
 
 import java.io.IOException;
 
-/**
- * Created by Dempe on 2016/12/7.
- */
 public class NoCompress implements Compress {
 
     @Override

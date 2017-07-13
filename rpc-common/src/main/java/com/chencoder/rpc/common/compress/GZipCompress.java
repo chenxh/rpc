@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-/**
- * Created by Dempe on 2016/12/7.
- */
 public class GZipCompress implements Compress {
 
     private static final int BUFFER_SIZE = 256;

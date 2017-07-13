@@ -47,6 +47,4 @@ public enum SerializeType {
     }
 
     public final static SerializeType DEFAULT_SERIALIZE_TYPE = SerializeType.Kyro;
-    
-    //public final static KryoSerialization kryoSerialization = new KryoSerialization();
 }

@@ -1,10 +1,7 @@
 package com.chencoder.rpc.core.sc.api;
 
-import org.apache.curator.shaded.com.google.common.collect.Lists;
-
 import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.core.RpcClient;
-import com.chencoder.rpc.core.sc.api.interceptor.SimpleInterceptor;
 
 public class ClientTest {
 	
@@ -17,7 +14,7 @@ public class ClientTest {
 		config.setServiceName(DemoService.class.getName());
 		config.setCompressType("None");
 		config.setSerializeType("Kyro");
-		config.setInterceptors(Lists.newArrayList(new SimpleInterceptor()));
+		//config.setInterceptors(Lists.newArrayList(new SimpleInterceptor()));
 		
 		RpcClient client = new RpcClient(config);
 		DemoService demoService = client.refer(DemoService.class);

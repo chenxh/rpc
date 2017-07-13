@@ -1,5 +1,5 @@
 # rpc
-使用Netty 实现一个简单rpc，练手之作。
+使用Netty 实现的一个简单rpc。
 
 # features
 - 直连调用完成

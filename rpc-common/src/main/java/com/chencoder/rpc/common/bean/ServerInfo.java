@@ -4,9 +4,6 @@ import org.apache.curator.x.discovery.ServiceInstance;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * Created by Dempe on 2016/12/20.
- */
 public class ServerInfo {
 
     private String host;
@@ -15,7 +12,7 @@ public class ServerInfo {
 
     private AtomicInteger activeCount = new AtomicInteger(0);
 
-    public ServerInfo(ServiceInstance instance) {
+    public ServerInfo(ServiceInstance<MetaInfo> instance) {
         this.host = instance.getAddress();
         this.port = instance.getPort();
     }

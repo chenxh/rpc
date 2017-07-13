@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.chencoder.rpc.common.bean.Request;
-import com.chencoder.rpc.common.config.ServiceConfig;
 import com.chencoder.rpc.common.interceptor.RpcInvokerInterceptor;
 import com.chencoder.rpc.core.RpcInvoker;
 import com.chencoder.rpc.core.invoker.RpcInvokerWraper;
