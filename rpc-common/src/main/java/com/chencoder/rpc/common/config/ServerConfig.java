@@ -2,7 +2,7 @@ package com.chencoder.rpc.common.config;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
+import com.chencoder.rpc.common.interceptor.RpcInvokerInterceptor;
 
 public class ServerConfig {
 	
@@ -12,7 +12,7 @@ public class ServerConfig {
 	
 	private Integer port;
 	
-	private List<ServiceConfig> serviceConfigs;
+	private List<RpcInvokerInterceptor> interceptors;
 	
 	public Integer getSoBacklog() {
 		return soBacklog;
@@ -38,11 +38,11 @@ public class ServerConfig {
 	public void setPort(Integer port) {
 		this.port = port;
 	}
-	public void addServiceConfig(ServiceConfig config) {
-		if(serviceConfigs == null){
-			serviceConfigs = Lists.newArrayList();
-		}
-		serviceConfigs.add(config);
+	public List<RpcInvokerInterceptor> getInterceptors() {
+		return interceptors;
+	}
+	public void setInterceptors(List<RpcInvokerInterceptor> interceptors) {
+		this.interceptors = interceptors;
 	}
 
 }

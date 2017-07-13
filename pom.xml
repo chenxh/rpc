@@ -11,6 +11,8 @@
 	<modules>
 		<module>rpc-common</module>
 		<module>rpc-core</module>
+		<module>rpc-interceptor</module>
+		<module>rpc-demo</module>
 	</modules>
 
 	<properties>

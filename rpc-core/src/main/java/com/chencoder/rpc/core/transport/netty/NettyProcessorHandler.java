@@ -1,20 +1,12 @@
 package com.chencoder.rpc.core.transport.netty;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.chencoder.rpc.common.EventType;
-import com.chencoder.rpc.common.MessageType;
-import com.chencoder.rpc.common.bean.Request;
-import com.chencoder.rpc.common.bean.Response;
 import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.common.bean.RpcResponse;
-import com.chencoder.rpc.common.config.ActionMethod;
 import com.chencoder.rpc.core.RpcProcessor;
-import com.chencoder.rpc.core.provider.DefaultServiceProvider;
-import com.chencoder.rpc.core.provider.Exporter;
-import com.google.common.base.Preconditions;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -36,19 +28,14 @@ public class NettyProcessorHandler extends SimpleChannelInboundHandler<RpcReques
 				ctx.writeAndFlush(message);
 			}
 			try{
-				Request req = message.getRequest();
 				if(processor == null){
 					return;
 				}
 				RpcResponse response = processor.proccess(message);
-				
 				ctx.writeAndFlush(response);
-				
 			}catch(Exception e){
 				ctx.newFailedFuture(e);
-				e.printStackTrace();
 			}
-			
 		}
 	}
 

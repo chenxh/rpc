@@ -1,8 +1,11 @@
 package com.chencoder.rpc.core.sc.api;
 
+import org.apache.curator.shaded.com.google.common.collect.Lists;
+
 import com.chencoder.rpc.common.config.RegistryConfig;
 import com.chencoder.rpc.common.config.ServerConfig;
 import com.chencoder.rpc.core.RpcServer;
+import com.chencoder.rpc.core.sc.api.interceptor.SimpleInterceptor;
 
 public class ServerMain {
 
@@ -15,6 +18,7 @@ public class ServerMain {
 		serverConfig.setSoBacklog(128);
 		serverConfig.setSoKeepAlive(true);
 		serverConfig.setTcpNoDelay(true);
+		serverConfig.setInterceptors(Lists.newArrayList(new SimpleInterceptor()));
 		
 		//服务配置
 		registryConfig = new RegistryConfig();

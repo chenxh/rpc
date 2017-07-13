@@ -29,7 +29,7 @@ public class RpcServer {
 	public <T> void export(Class<T> serviceClass, T implObject){			
 		if(exporter != null)
 			exporter.exportService(serviceClass, implObject, config.getPort());
-		processor.addServiceProvider(serviceClass, implObject);
+		processor.addServiceProvider(serviceClass, implObject,config.getInterceptors());
 	}
 	
 	public void startServer(){
