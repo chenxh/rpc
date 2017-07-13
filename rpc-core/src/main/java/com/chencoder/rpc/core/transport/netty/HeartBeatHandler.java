@@ -5,9 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.EventType;
 import com.chencoder.rpc.common.bean.Header;
-import com.chencoder.rpc.common.bean.RpcMessage;
 import com.chencoder.rpc.common.bean.RpcRequest;
-import com.chencoder.rpc.core.cluster.DefaultCluster;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,7 +14,7 @@ import io.netty.handler.timeout.IdleStateEvent;
 
 public class HeartBeatHandler extends ChannelDuplexHandler {
 
-	private static final Logger logger = LoggerFactory.getLogger(DefaultCluster.class);
+	private static final Logger logger = LoggerFactory.getLogger(HeartBeatHandler.class);
 	
 	@Override
 	public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {

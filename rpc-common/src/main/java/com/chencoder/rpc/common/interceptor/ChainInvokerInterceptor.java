@@ -1,32 +1,36 @@
 package com.chencoder.rpc.common.interceptor;
 
-import com.google.common.collect.Lists;
-
-import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 
+import com.chencoder.rpc.common.bean.RpcRequest;
+import com.google.common.collect.Lists;
+
 /**
  */
-public class ChainInvokerInterceptor implements InvokerInterceptor {
+public class ChainInvokerInterceptor implements RpcInvokerInterceptor {
 
-    private List<InvokerInterceptor> interceptors = Lists.newArrayList();
+    private List<RpcInvokerInterceptor> interceptors = Lists.newArrayList();
 
-    @Override
-    public boolean beforeInvoke(Object target, Method method, Object... args) {
-        Iterator<InvokerInterceptor> iterator = interceptors.iterator();
+    public ChainInvokerInterceptor(List<RpcInvokerInterceptor> interceptors2) {
+    	this.interceptors = interceptors2;
+    }
+
+	@Override
+    public boolean beforeInvoke(RpcRequest request) {
+        Iterator<RpcInvokerInterceptor> iterator = interceptors.iterator();
         boolean noInterrupt = true;
         while (iterator.hasNext() && noInterrupt) {
-            noInterrupt = iterator.next().beforeInvoke(target, method, args);
+            noInterrupt = iterator.next().beforeInvoke(request);
         }
         return noInterrupt;
     }
 
     @Override
-    public Object processInvoke(Object target, Method method, Object... args) {
+    public Object processInvoke(RpcRequest request) {
         Object result = null;
-        for (InvokerInterceptor interceptor : interceptors) {
-            Object ret = interceptor.processInvoke(target, method, args);
+        for (RpcInvokerInterceptor interceptor : interceptors) {
+            Object ret = interceptor.processInvoke(request);
             if (ret != null) {
                 result = ret;
             }
@@ -35,20 +39,20 @@ public class ChainInvokerInterceptor implements InvokerInterceptor {
     }
 
     @Override
-    public boolean afterInvoke(Object target, Method method, Object result) {
-        Iterator<InvokerInterceptor> iterator = interceptors.iterator();
+    public boolean afterInvoke(RpcRequest request) {
+        Iterator<RpcInvokerInterceptor> iterator = interceptors.iterator();
         boolean noInterrupt = true;
         while (iterator.hasNext() && noInterrupt) {
-            noInterrupt = iterator.next().afterInvoke(target, method, result);
+            noInterrupt = iterator.next().afterInvoke(request);
         }
         return noInterrupt;
     }
 
-    public boolean addInvokerInterceptor(InvokerInterceptor invokerInterceptor) {
+    public boolean addInvokerInterceptor(RpcInvokerInterceptor invokerInterceptor) {
         return interceptors.add(invokerInterceptor);
     }
 
-    public void addInvokerInterceptor(int index, InvokerInterceptor invokerInterceptor) {
+    public void addInvokerInterceptor(int index, RpcInvokerInterceptor invokerInterceptor) {
         interceptors.add(index, invokerInterceptor);
     }
 }

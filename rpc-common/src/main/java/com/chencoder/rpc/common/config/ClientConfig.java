@@ -2,7 +2,7 @@ package com.chencoder.rpc.common.config;
 
 import java.util.List;
 
-import com.chencoder.rpc.common.interceptor.InvokerInterceptor;
+import com.chencoder.rpc.common.interceptor.RpcInvokerInterceptor;
 
 public class ClientConfig {
 	
@@ -28,7 +28,7 @@ public class ClientConfig {
     
     private int retry = 0;
     
-    private List<InvokerInterceptor> interceptors;
+    private List<RpcInvokerInterceptor> interceptors;
 
 	public String getServiceName() {
 		return serviceName;
@@ -102,11 +102,11 @@ public class ClientConfig {
 		this.serializeType = serializeType;
 	}
 
-	public List<InvokerInterceptor> getInterceptors() {
+	public List<RpcInvokerInterceptor> getInterceptors() {
 		return interceptors;
 	}
 
-	public void setInterceptors(List<InvokerInterceptor> interceptors) {
+	public void setInterceptors(List<RpcInvokerInterceptor> interceptors) {
 		this.interceptors = interceptors;
 	}
 

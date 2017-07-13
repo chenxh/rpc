@@ -1,22 +1,24 @@
 package com.chencoder.rpc.common.interceptor;
 
-import java.lang.reflect.Method;
+import com.chencoder.rpc.common.bean.RpcRequest;
 
 /**
  */
-public class AbstractInvokerInterceptor implements InvokerInterceptor {
-    @Override
-    public boolean beforeInvoke(Object target, Method method, Object... args) {
-        return true;
-    }
+public class AbstractInvokerInterceptor implements RpcInvokerInterceptor {
 
-    @Override
-    public Object processInvoke(Object target, Method method, Object... args) {
-        return null;
-    }
+	@Override
+	public boolean beforeInvoke(RpcRequest req) {
+		return true;
+	}
 
-    @Override
-    public boolean afterInvoke(Object target, Method method, Object result) {
-        return true;
-    }
+	@Override
+	public Object processInvoke(RpcRequest req) {
+		return null;
+	}
+
+	@Override
+	public boolean afterInvoke(RpcRequest req) {
+		return true;
+	}
+	
 }

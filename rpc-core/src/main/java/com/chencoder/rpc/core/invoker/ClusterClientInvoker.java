@@ -14,7 +14,6 @@ import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.common.cluster.lb.LoadBalance;
 import com.chencoder.rpc.common.cluster.lb.RandomLoadBalance;
 import com.chencoder.rpc.common.config.ClientConfig;
-import com.chencoder.rpc.core.cluster.DefaultCluster;
 import com.chencoder.rpc.core.pool.SimpleNettyClientPool;
 import com.chencoder.rpc.core.registry.RpcServiceDiscovery;
 import com.chencoder.rpc.core.registry.ZkServiceDiscovery;
@@ -23,7 +22,7 @@ import com.google.common.collect.Lists;
 
 public class ClusterClientInvoker extends RpcClientInvoker{
 	
-	private static final Logger logger = LoggerFactory.getLogger(DefaultCluster.class);
+	private static final Logger logger = LoggerFactory.getLogger(ClusterClientInvoker.class);
 	
 	private ClientConfig config;
 	

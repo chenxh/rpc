@@ -16,6 +16,7 @@ import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.common.util.RpcUtil;
 import com.chencoder.rpc.core.RpcInvoker;
 import com.chencoder.rpc.core.invoker.ClusterClientInvoker;
+import com.chencoder.rpc.core.invoker.RpcInvokerWraper;
 import com.chencoder.rpc.core.invoker.SingleClientInvoker;
 import com.chencoder.rpc.core.transport.TransportClientFactory;
 
@@ -32,12 +33,13 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 	public JdkRpcDynamicProxy(ClientConfig config){
 		this.clientConfig = config;
 		if(!StringUtils.isEmpty(config.getRegistryAddress())){
-			//client = new DefaultCluster(config);
 			invoker = new ClusterClientInvoker(config);
 		}else{
 			invoker = new SingleClientInvoker(
 					TransportClientFactory.newTransportClient(config));
 		}
+		
+		invoker = new RpcInvokerWraper(invoker,config.getInterceptors());
 		serializeType = SerializeType.getSerializeTypeByName(clientConfig.getSerializeType());
 		if(serializeType == null){
 			throw new RpcException("no soupport serializeType ["+ clientConfig.getSerializeType() +"]");
