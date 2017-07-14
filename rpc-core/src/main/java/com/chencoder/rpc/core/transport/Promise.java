@@ -1,4 +1,4 @@
-package com.chencoder.rpc.core.transport.client;
+package com.chencoder.rpc.core.transport;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;

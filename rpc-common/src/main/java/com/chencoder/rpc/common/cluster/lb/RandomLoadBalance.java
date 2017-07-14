@@ -3,14 +3,14 @@ package com.chencoder.rpc.common.cluster.lb;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.curator.x.discovery.ServiceInstance;
-
-import com.chencoder.rpc.common.bean.MetaInfo;
+import com.chencoder.rpc.common.bean.RpcRequest;
+import com.chencoder.rpc.common.bean.ServerInfo;
 
 public class RandomLoadBalance implements LoadBalance{
 
+
 	@Override
-	public ServiceInstance<MetaInfo> select(List<ServiceInstance<MetaInfo>> serviceList) {
+	public ServerInfo select(List<ServerInfo> serviceList, RpcRequest request) {
 		if(serviceList == null || serviceList.size() == 0){
 			return null;
 		}

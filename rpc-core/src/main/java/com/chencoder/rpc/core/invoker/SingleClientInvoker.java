@@ -1,5 +1,6 @@
 package com.chencoder.rpc.core.invoker;
 
+import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.core.transport.TransportClient;
 
 public class SingleClientInvoker extends RpcClientInvoker{
@@ -12,7 +13,7 @@ public class SingleClientInvoker extends RpcClientInvoker{
 	}
 
 	@Override
-	TransportClient getTransportClient() {
+	TransportClient getTransportClient(RpcRequest request) {
 		return client;
 	}
 

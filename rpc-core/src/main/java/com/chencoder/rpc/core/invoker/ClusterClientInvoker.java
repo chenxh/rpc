@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.chencoder.rpc.common.LoadBalanceType;
 import com.chencoder.rpc.common.bean.MetaInfo;
 import com.chencoder.rpc.common.bean.RpcException;
+import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.common.cluster.lb.LoadBalance;
 import com.chencoder.rpc.common.cluster.lb.RandomLoadBalance;
@@ -47,15 +48,14 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 	}
 
 	@Override
-	TransportClient getTransportClient() {
+	TransportClient getTransportClient(RpcRequest request) {
 		try {
 			Collection<ServiceInstance<MetaInfo>> servers = discovery.queryForInstances(serviceName);
 			if(servers != null && servers.size() > 0){
-				ServiceInstance<MetaInfo> select = select(servers);
-				if(select == null){
+				ServerInfo serverInfo = select(servers, request);
+				if(serverInfo == null){
 					throw new RpcException("no provider service selected");
 				}
-				ServerInfo serverInfo = new ServerInfo(select);
 				return pool.getObject(serverInfo);
 			}else{
 				throw new RpcException("no provider services");
@@ -84,10 +84,21 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 		}
 	}
 	
-	public ServiceInstance<MetaInfo> select(Collection<ServiceInstance<MetaInfo>> servers){
-		List<ServiceInstance<MetaInfo>> newArrayList = Lists.newArrayList(servers);
-		ServiceInstance<MetaInfo> selected = loadBalance.select(newArrayList);
+	public ServerInfo select(Collection<ServiceInstance<MetaInfo>> servers, RpcRequest request){
+		List<ServerInfo> serverInfos = getServers(servers);
+		ServerInfo selected = loadBalance.select(serverInfos, request);
 		return selected;
+	}
+
+	private List<ServerInfo> getServers(Collection<ServiceInstance<MetaInfo>> servers) {
+		if(servers == null || servers.isEmpty()){
+			return null;
+		}
+		List<ServerInfo> res = Lists.newArrayListWithCapacity(servers.size());
+		for(ServiceInstance<MetaInfo> inst: servers){
+			res.add(new ServerInfo(inst));
+		}
+		return res;
 	}
 
 	@Override

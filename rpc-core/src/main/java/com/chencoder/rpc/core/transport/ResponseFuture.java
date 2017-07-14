@@ -3,10 +3,7 @@ package com.chencoder.rpc.core.transport;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.chencoder.rpc.common.bean.RpcMessage;
-import com.chencoder.rpc.core.transport.client.Promise;
 
-/**
- */
 public class ResponseFuture<T> {
     private long createTime;
     private long timeOut;

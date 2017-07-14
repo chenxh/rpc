@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.chencoder.rpc.common.bean.RpcException;
 import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.common.bean.ServerInfo;
+import com.chencoder.rpc.core.transport.Promise;
 import com.chencoder.rpc.core.transport.ResponseFuture;
 import com.chencoder.rpc.core.transport.TransportClient;
-import com.chencoder.rpc.core.transport.client.Promise;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;

@@ -20,7 +20,7 @@ public abstract class RpcClientInvoker implements RpcInvoker{
 		TransportClient client = null;
 		for(int i=0; i<retryTimes; i++){
 			try {
-				client =  getTransportClient();
+				client =  getTransportClient(request);
 				ResponseFuture<?> resp = client.request(request, context.getTimout());
 				return resp.getPromise().await();
 			} catch (Throwable e) {
@@ -31,7 +31,7 @@ public abstract class RpcClientInvoker implements RpcInvoker{
 		throw new RpcException("remote call[" + request + "] failed after " + context.getRetry() + " times retry");
 	}
 	
-	abstract TransportClient getTransportClient();
+	abstract TransportClient getTransportClient(RpcRequest request);
 	abstract void addFailedClient(TransportClient client);
 	
 }
