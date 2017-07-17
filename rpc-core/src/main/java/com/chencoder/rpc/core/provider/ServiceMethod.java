@@ -8,13 +8,13 @@ public class ServiceMethod {
 
     private String methodName;
 
-    private Class[] paramTypes;
+    private Class<?>[] paramTypes;
     
     public ServiceMethod(String serviceName,String methodName){
     	this(serviceName, methodName, null);
     }
     
-    public ServiceMethod(String serviceName,String methodName, Class[] paramTypes ){
+    public ServiceMethod(String serviceName,String methodName, Class<?>[] paramTypes ){
     	setServiceName(serviceName);
     	setMethodName(methodName);
     	setParamTypes(paramTypes);

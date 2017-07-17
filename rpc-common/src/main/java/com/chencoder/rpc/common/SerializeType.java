@@ -25,7 +25,7 @@ public enum SerializeType {
         } else if (StringUtils.equals(Hession2.name(), name)) {
             return Hession2;
         }
-        return null;
+        return Kyro;
     }
 
     public static Serialization getSerializationByExtend(byte value) {

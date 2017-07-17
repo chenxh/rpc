@@ -1,5 +1,6 @@
 package com.chencoder.rpc.core.invoker;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,9 +42,9 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 		
 	}
 	
-	public ClusterClientInvoker(ClientConfig config){
+	public ClusterClientInvoker(ClientConfig config, Class<?> serviceClass){
 		this.config = config;
-		this.serviceName = config.getServiceName();
+		this.serviceName = serviceClass.getName();
 		init();
 	}
 
@@ -104,6 +105,11 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 	@Override
 	void addFailedClient(TransportClient client) {
 		fails.add(client.getServerInfo());
+	}
+
+	@Override
+	public void close() throws IOException {
+		pool.close();
 	}
 
 }

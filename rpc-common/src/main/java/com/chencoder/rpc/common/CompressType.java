@@ -25,7 +25,7 @@ public enum CompressType {
         } else if (StringUtils.equals(None.name(), name)) {
             return None;
         }
-        return null;
+        return None;
     }
 
     public static Compress getCompressTypeByValueByExtend(byte extend) {

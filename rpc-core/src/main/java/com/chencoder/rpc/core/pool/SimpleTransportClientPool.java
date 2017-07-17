@@ -1,5 +1,7 @@
 package com.chencoder.rpc.core.pool;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -11,7 +13,7 @@ import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.core.transport.TransportClient;
 import com.chencoder.rpc.core.transport.TransportClientFactory;
 
-public class SimpleTransportClientPool {
+public class SimpleTransportClientPool implements Closeable{
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -43,6 +45,13 @@ public class SimpleTransportClientPool {
 			
 		}else{
 			return client;
+		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		for(TransportClient client : poolMap.values()){
+			client.close();
 		}
 	}
 	

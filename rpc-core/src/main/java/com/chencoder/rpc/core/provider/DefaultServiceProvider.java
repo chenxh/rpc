@@ -43,7 +43,7 @@ public class DefaultServiceProvider {
 		return new ServiceMethod(serviceName,method.getName(), method.getParameterTypes());
 	}
 	public RpcInvoker findInvoker(Request req){
-		Class[] paramTypes = new Class[0];
+		Class<?>[] paramTypes = new Class[0];
 		if(req.getArgs() != null && req.getArgs().length > 0){
 			paramTypes = new Class[req.getArgs().length];
 			for(int i=0; i<req.getArgs().length; i++ ){

@@ -1,5 +1,6 @@
 package com.chencoder.rpc.core.invoker;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 
 import com.chencoder.rpc.common.bean.RpcException;
@@ -23,6 +24,11 @@ public class RpcServiceInvoker implements RpcInvoker{
 		} catch (Exception e) {
 			throw new RpcException(e);
 		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		
 	}
 	
 }

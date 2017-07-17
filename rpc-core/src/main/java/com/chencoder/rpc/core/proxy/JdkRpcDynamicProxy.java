@@ -1,5 +1,7 @@
 package com.chencoder.rpc.core.proxy;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
@@ -20,7 +22,7 @@ import com.chencoder.rpc.core.invoker.RpcInvokerWraper;
 import com.chencoder.rpc.core.invoker.SingleClientInvoker;
 import com.chencoder.rpc.core.transport.TransportClientFactory;
 
-public class JdkRpcDynamicProxy implements InvocationHandler{
+public class JdkRpcDynamicProxy implements InvocationHandler,Closeable{
 	
 	private ClientConfig clientConfig;
 	
@@ -30,10 +32,13 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 	
 	private RpcInvoker invoker;
 	
-	public JdkRpcDynamicProxy(ClientConfig config){
+	protected Class<?> serviceClass;
+	
+	public JdkRpcDynamicProxy(ClientConfig config, Class<?> serviceClass){
 		this.clientConfig = config;
+		this.serviceClass = serviceClass;
 		if(!StringUtils.isEmpty(config.getRegistryAddress())){
-			invoker = new ClusterClientInvoker(config);
+			invoker = new ClusterClientInvoker(config, serviceClass);
 		}else{
 			invoker = new SingleClientInvoker(
 					TransportClientFactory.newTransportClient(config));
@@ -53,7 +58,7 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 	@Override
 	public Object invoke(Object target, Method method, Object[] args) throws Throwable {
 		Request req = new Request();
-		req.setServiceName(clientConfig.getServiceName());
+		req.setServiceName(serviceClass.getName());
 		req.setMethodName(method.getName());
 		req.setArgs(args);
 		
@@ -69,6 +74,11 @@ public class JdkRpcDynamicProxy implements InvocationHandler{
 		RpcContext.getContext().setTimout(clientConfig.getTimeOut());
 		//TODO:other
 		//RpcContext.getContext().setTimout(clientConfig.getTimeOut());
+	}
+
+	@Override
+	public void close() throws IOException {
+		invoker.close();
 	}
 
 }

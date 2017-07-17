@@ -1,5 +1,7 @@
 package com.chencoder.rpc.core.invoker;
 
+import java.io.IOException;
+
 import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.core.transport.TransportClient;
 
@@ -23,6 +25,11 @@ public class SingleClientInvoker extends RpcClientInvoker{
 	
 	public void setClient(TransportClient client) {
 		this.client = client;
+	}
+
+	@Override
+	public void close() throws IOException {
+		client.close();
 	}
 
 }

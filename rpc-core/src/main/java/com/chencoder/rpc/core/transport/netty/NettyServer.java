@@ -3,14 +3,10 @@ package com.chencoder.rpc.core.transport.netty;
 
 import com.chencoder.rpc.common.config.ServerConfig;
 import com.chencoder.rpc.core.RpcProcessor;
-import com.chencoder.rpc.core.provider.Exporter;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
 
-/**
- * Created by Dempe on 2016/12/9.
- */
 public class NettyServer extends AbstractServer {
 	
 	private RpcProcessor processor;

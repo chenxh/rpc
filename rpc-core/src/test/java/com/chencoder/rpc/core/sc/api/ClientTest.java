@@ -11,7 +11,6 @@ public class ClientTest {
 		config.setRegistryAddress("localhost:2181");
 		//config.setRemoteIp("127.0.0.1");
 		//config.setRemotePort(1122);
-		config.setServiceName(DemoService.class.getName());
 		config.setCompressType("None");
 		config.setSerializeType("Kyro");
 		//config.setInterceptors(Lists.newArrayList(new SimpleInterceptor()));

@@ -1,5 +1,6 @@
 package com.chencoder.rpc.core.invoker;
 
+import java.io.IOException;
 import java.util.List;
 
 import com.chencoder.rpc.common.bean.RpcRequest;
@@ -36,6 +37,11 @@ public class RpcInvokerWraper implements RpcInvoker {
 		}
 		interceptor.afterInvoke(request);
 		return result;
+	}
+
+	@Override
+	public void close() throws IOException {
+		clientInvoker.close();
 	}
 
 }

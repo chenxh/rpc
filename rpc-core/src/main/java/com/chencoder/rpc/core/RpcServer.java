@@ -18,12 +18,21 @@ public class RpcServer {
 	private RpcProcessor processor = new DefaultRpcProcessor();
 
 	public RpcServer(ServerConfig config){
-		setConfig(config);
+		this(config, null);
 	}
 	
 	public RpcServer(ServerConfig config, RegistryConfig registryConfig){
 		setConfig(config);
-		exporter = new Exporter(registryConfig);
+		if(registryConfig != null){
+			exporter = new Exporter(registryConfig);
+		}
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				close();
+			}
+		}));
 	}
 	
 	public <T> void export(Class<T> serviceClass, T implObject){			
@@ -47,6 +56,10 @@ public class RpcServer {
 
 	public void setConfig(ServerConfig config) {
 		this.config = config;
+	}
+	
+	public void close(){
+		transportServer.close();
 	}
 
 }

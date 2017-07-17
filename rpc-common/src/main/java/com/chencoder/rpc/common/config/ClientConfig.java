@@ -6,8 +6,6 @@ import com.chencoder.rpc.common.interceptor.RpcInvokerInterceptor;
 
 public class ClientConfig {
 	
-	private String serviceName;
-
     private int connectionTimeout;
 
     private String ha;
@@ -29,14 +27,6 @@ public class ClientConfig {
     private int retry = 0;
     
     private List<RpcInvokerInterceptor> interceptors;
-
-	public String getServiceName() {
-		return serviceName;
-	}
-
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
 
 	public int getConnectionTimeout() {
 		return connectionTimeout;
