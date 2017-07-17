@@ -16,7 +16,8 @@
 
 ##客户端
 
-`ClientConfig config = new ClientConfig();
+``` java
+		ClientConfig config = new ClientConfig();
 		config.setRemoteIp("127.0.0.1");
 		config.setRemotePort(1122);
 		RpcClient client = new RpcClient(config);
@@ -24,11 +25,15 @@
 		DemoReq req = new DemoReq();
 		req.setP1("p1");
 		req.setP2("p2");
-		refer.testObj(req);`
+		refer.testObj(req);
+```
 ##服务端
 
-`ServerConfig serverConfig = new ServerConfig();
+``` java
+		ServerConfig serverConfig = new ServerConfig();
 		serverConfig.setPort(1122);		
 		RpcServer server = new RpcServer(serverConfig);
 		server.export(TestService.class, new TestServiceImpl());
-		server.startServer();`
+		server.startServer();
+```
+	
