@@ -8,29 +8,30 @@ import org.slf4j.LoggerFactory;
 
 import com.chencoder.rpc.common.bean.RpcException;
 import com.chencoder.rpc.common.bean.ServerInfo;
-import com.chencoder.rpc.core.transport.netty.NettyClient;
+import com.chencoder.rpc.core.transport.TransportClient;
+import com.chencoder.rpc.core.transport.TransportClientFactory;
 
-public class SimpleNettyClientPool {
+public class SimpleTransportClientPool {
 	
 	private Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private ConcurrentHashMap<ServerInfo, NettyClient> poolMap = new ConcurrentHashMap<ServerInfo, NettyClient>();
+	private ConcurrentHashMap<ServerInfo, TransportClient> poolMap = new ConcurrentHashMap<ServerInfo, TransportClient>();
 	
 	private ReentrantLock lock = new ReentrantLock();
 
-	public SimpleNettyClientPool(){
+	public SimpleTransportClientPool(){
 	}
 	
-	public NettyClient getObject(ServerInfo key) throws InterruptedException{
-		NettyClient client = poolMap.get(key);
+	public TransportClient getObject(ServerInfo key) throws InterruptedException{
+		TransportClient client = poolMap.get(key);
 		if(client == null){
 			try{
 				lock.lock();
-				NettyClient v2 = poolMap.get(key);
+				TransportClient v2 = poolMap.get(key);
 				if(v2 != null){
 					return v2;
 				}
-				v2 =  new NettyClient(key);
+				v2 =  TransportClientFactory.newTransportClient(key);
 				poolMap.putIfAbsent(key, v2);
 				logger.debug("create netty client success");
 				return v2;

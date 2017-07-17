@@ -15,7 +15,7 @@ import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.common.cluster.lb.LoadBalance;
 import com.chencoder.rpc.common.cluster.lb.RandomLoadBalance;
 import com.chencoder.rpc.common.config.ClientConfig;
-import com.chencoder.rpc.core.pool.SimpleNettyClientPool;
+import com.chencoder.rpc.core.pool.SimpleTransportClientPool;
 import com.chencoder.rpc.core.registry.RpcServiceDiscovery;
 import com.chencoder.rpc.core.registry.ZkServiceDiscovery;
 import com.chencoder.rpc.core.transport.TransportClient;
@@ -33,7 +33,7 @@ public class ClusterClientInvoker extends RpcClientInvoker{
 	
 	private LoadBalance loadBalance;
 	
-	private SimpleNettyClientPool pool = new SimpleNettyClientPool();
+	private SimpleTransportClientPool pool = new SimpleTransportClientPool();
 	
 	private List<ServerInfo> fails = Lists.newArrayList();
 	

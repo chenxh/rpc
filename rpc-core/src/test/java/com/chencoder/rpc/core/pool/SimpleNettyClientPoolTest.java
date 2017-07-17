@@ -5,7 +5,7 @@ import com.chencoder.rpc.common.bean.ServerInfo;
 public class SimpleNettyClientPoolTest {
 	
 	public static void main(String[] args) {
-		SimpleNettyClientPool pool = new SimpleNettyClientPool();
+		SimpleTransportClientPool pool = new SimpleTransportClientPool();
 		
 		ServerInfo info = new ServerInfo("127.0.0.1", 1333);
 		try {
