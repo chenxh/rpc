@@ -9,3 +9,26 @@
 - HA
 - 配置方式：Java配置
 - 拦截器实现完成
+
+
+
+# 直连调用
+
+##客户端
+
+`ClientConfig config = new ClientConfig();
+		config.setRemoteIp("127.0.0.1");
+		config.setRemotePort(1122);
+		RpcClient client = new RpcClient(config);
+		TestService refer = client.refer(TestService.class);	
+		DemoReq req = new DemoReq();
+		req.setP1("p1");
+		req.setP2("p2");
+		refer.testObj(req);`
+##服务端
+
+`ServerConfig serverConfig = new ServerConfig();
+		serverConfig.setPort(1122);		
+		RpcServer server = new RpcServer(serverConfig);
+		server.export(TestService.class, new TestServiceImpl());
+		server.startServer();`
