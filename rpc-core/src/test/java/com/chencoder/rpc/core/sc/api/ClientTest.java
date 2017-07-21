@@ -12,12 +12,12 @@ public class ClientTest {
 		//config.setRemoteIp("127.0.0.1");
 		//config.setRemotePort(1122);
 		config.setCompressType("None");
-		config.setSerializeType("Kyro");
+		config.setSerializeType("K");
 		//config.setInterceptors(Lists.newArrayList(new SimpleInterceptor()));
 		
 		RpcClient client = new RpcClient(config);
 		DemoService demoService = client.refer(DemoService.class);
-		demoService.testVoid();
+		System.out.println(demoService.testString());
 		/*try {
 			while(true){
 				Thread.sleep(20*1000);

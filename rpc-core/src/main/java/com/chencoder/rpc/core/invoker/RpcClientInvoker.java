@@ -1,5 +1,6 @@
 package com.chencoder.rpc.core.invoker;
 
+import com.chencoder.rpc.common.bean.Response;
 import com.chencoder.rpc.common.bean.RpcContext;
 import com.chencoder.rpc.common.bean.RpcException;
 import com.chencoder.rpc.common.bean.RpcRequest;
@@ -22,7 +23,8 @@ public abstract class RpcClientInvoker implements RpcInvoker{
 			try {
 				client =  getTransportClient(request);
 				ResponseFuture<?> resp = client.request(request, context.getTimout());
-				return resp.getPromise().await();
+				Response response = (Response)resp.getPromise().await();
+				return response.getResult();
 			} catch (Throwable e) {
 				addFailedClient(client);
 			}

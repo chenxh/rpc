@@ -16,7 +16,7 @@ public class RpcResponse extends RpcMessage{
 
 	@Override
 	public Object getContent() {
-		return null;
+		return response;
 	}
 
 	public Response getResponse() {

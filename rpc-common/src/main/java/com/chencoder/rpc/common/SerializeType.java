@@ -5,11 +5,12 @@ import org.apache.commons.lang3.StringUtils;
 import com.chencoder.rpc.common.serialize.FastJsonSerialization;
 import com.chencoder.rpc.common.serialize.Hessian2Serialization;
 import com.chencoder.rpc.common.serialize.KryoSerialization;
+import com.chencoder.rpc.common.serialize.ProtostuffSerialization;
 import com.chencoder.rpc.common.serialize.Serialization;
 
 public enum SerializeType {
 
-    Kyro((byte) 0), Fastjson((byte) 1), Hession2((byte) 2);
+    Kyro((byte) 0), Fastjson((byte) 1), Hession2((byte) 2), Protostuff((byte)3);
 
     private byte value;
 
@@ -24,6 +25,8 @@ public enum SerializeType {
             return Fastjson;
         } else if (StringUtils.equals(Hession2.name(), name)) {
             return Hession2;
+        } else if (StringUtils.equals(Protostuff.name(), name)){
+        	return Protostuff;
         }
         return Kyro;
     }
@@ -36,6 +39,8 @@ public enum SerializeType {
                 return new FastJsonSerialization();
             case 0x2:
                 return new Hessian2Serialization();
+            case 0x3:
+                return new ProtostuffSerialization();
             default:
                 return new KryoSerialization();
         }
