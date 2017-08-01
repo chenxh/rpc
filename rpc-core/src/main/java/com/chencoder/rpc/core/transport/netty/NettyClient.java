@@ -2,6 +2,8 @@ package com.chencoder.rpc.core.transport.netty;
 
 import java.lang.reflect.Field;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,22 +40,6 @@ public class NettyClient implements TransportClient {
     
     private ServerInfo serverInfo;
     
-    
-    private final static Unsafe unsafe;
-    private static final long stateOffset;
-    static {
-    	try {
-    		
-    		Field field = Unsafe.class.getDeclaredField("theUnsafe");  
-            field.setAccessible(true);  
-            unsafe = (Unsafe)field.get(null);
-			stateOffset = unsafe.objectFieldOffset(NettyClient.class.getDeclaredField("state"));
-		} catch (Exception e) {
-			throw new Error(e);
-		}
-    }
-    
-    
     enum State{
     	UN_CONN(1),CONNING(2),CONNECTED(3);
     	private int value;
@@ -70,6 +56,8 @@ public class NettyClient implements TransportClient {
     }
     private volatile int state = State.UN_CONN.getValue();
     
+    private final AtomicInteger  stat = new AtomicInteger(State.UN_CONN.getValue());
+    		
     private volatile Channel channel;
 
     public NettyClient(ServerInfo info) throws InterruptedException {
@@ -113,15 +101,15 @@ public class NettyClient implements TransportClient {
     	if(isConnect()){
     		return ;
     	}
-    	int stat = state;
+    	int stat = this.stat.get();
     	if(stat == State.UN_CONN.getValue() && changeState(stat, State.CONNING.getValue())){
     		 ChannelFuture connect = b.connect(host, port);
     		 connect = connect.awaitUninterruptibly();
     		 channel = connect.channel();
-    	     state = State.CONNECTED.getValue();
-    	}else if(state == State.CONNING.getValue()){
-    		while(state == State.CONNING.getValue()){
-    			if(state == State.CONNECTED.getValue()){
+    	     changeState(stat, State.CONNECTED.getValue());
+    	}else if(this.stat.get() == State.CONNING.getValue()){
+    		while(this.stat.get() == State.CONNING.getValue()){
+    			if(this.stat.get() == State.CONNECTED.getValue()){
     				break;
     			}
     		}
@@ -129,7 +117,8 @@ public class NettyClient implements TransportClient {
     }
     
     private boolean changeState(int srcState, int destState){
-    	return unsafe.compareAndSwapInt(this, stateOffset , srcState, destState);
+    	//return unsafe.compareAndSwapInt(this, stateOffset , srcState, destState);
+    	return stat.compareAndSet(srcState, destState);
     }
 
     @Override
@@ -162,6 +151,7 @@ public class NettyClient implements TransportClient {
         }
     }
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public ResponseFuture<?> request(RpcRequest message, long timeout) {
 		if(state != State.CONNECTED.getValue()){
