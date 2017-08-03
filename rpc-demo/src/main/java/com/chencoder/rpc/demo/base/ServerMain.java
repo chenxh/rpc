@@ -5,8 +5,7 @@ import com.chencoder.rpc.core.RpcServer;
 
 public class ServerMain {
 	public static void main(String[] args) {
-		ServerConfig serverConfig = new ServerConfig();
-		serverConfig.setPort(1122);
+		ServerConfig serverConfig = new ServerConfig.Builder(1122).build();
 		
 		RpcServer server = new RpcServer(serverConfig);
 		server.export(TestService.class, new TestServiceImpl());

@@ -17,11 +17,11 @@
 ##客户端
 
 ``` java
-		ClientConfig config = new ClientConfig();
-		config.setRemoteIp("127.0.0.1");
-		config.setRemotePort(1122);
+		ClientConfig config = new ClientConfig.Builder().withDirect("127.0.0.1", 1122).build();
+
 		RpcClient client = new RpcClient(config);
-		TestService refer = client.refer(TestService.class);	
+		TestService refer = client.refer(TestService.class);
+		
 		DemoReq req = new DemoReq();
 		req.setP1("p1");
 		req.setP2("p2");
@@ -30,8 +30,8 @@
 ##服务端
 
 ``` java
-		ServerConfig serverConfig = new ServerConfig();
-		serverConfig.setPort(1122);		
+		ServerConfig serverConfig = new ServerConfig.Builder(1122).build();
+		
 		RpcServer server = new RpcServer(serverConfig);
 		server.export(TestService.class, new TestServiceImpl());
 		server.startServer();

@@ -2,25 +2,18 @@ package com.chencoder.rpc.core.transport;
 
 import com.chencoder.rpc.common.EventType;
 import com.chencoder.rpc.common.bean.Header;
-import com.chencoder.rpc.common.bean.RpcMessage;
 import com.chencoder.rpc.common.bean.RpcRequest;
 import com.chencoder.rpc.common.bean.ServerInfo;
 import com.chencoder.rpc.common.config.ServerConfig;
 import com.chencoder.rpc.core.transport.netty.NettyClient;
 import com.chencoder.rpc.core.transport.netty.NettyServer;
 
-import io.netty.channel.ChannelFuture;
-
 public class ServerClientTest {
 	
 	private static final int port = 1121;
 	
 	public static void main(String[] args) {
-		ServerConfig config = new ServerConfig();
-		config.setPort(port);
-		config.setSoBacklog(128);
-		config.setSoKeepAlive(true);
-		config.setTcpNoDelay(true);
+		ServerConfig config = new ServerConfig.Builder(port).build();
 		try {
 			NettyServer server = new NettyServer(config , port);
 			server.start();

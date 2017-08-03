@@ -7,13 +7,10 @@ public class ClientTest {
 	
 	public static void main(String[] args) {
 		
-		ClientConfig config = new ClientConfig();
-		config.setRegistryAddress("localhost:2181");
-		//config.setRemoteIp("127.0.0.1");
-		//config.setRemotePort(1122);
-		config.setCompressType("None");
-		config.setSerializeType("K");
-		//config.setInterceptors(Lists.newArrayList(new SimpleInterceptor()));
+		ClientConfig config = new ClientConfig.Builder()
+				.withRegistry("localhost:2181")
+				.compressType("None")
+				.serializeType("Kryo").build();
 		
 		RpcClient client = new RpcClient(config);
 		DemoService demoService = client.refer(DemoService.class);

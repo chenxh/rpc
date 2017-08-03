@@ -21,7 +21,7 @@ public class HeartBeatHandler extends ChannelDuplexHandler {
 		if (evt instanceof IdleStateEvent) {
 			IdleStateEvent e = (IdleStateEvent) evt;
 			if (e.state() == IdleState.READER_IDLE) {
-				logger.debug("send ping msg");
+				logger.debug("send ping msg to server [{}]", ctx.channel().remoteAddress());
 				ctx.writeAndFlush(getHeartBeatMessage());
 			} else if (e.state() == IdleState.WRITER_IDLE) {
 				

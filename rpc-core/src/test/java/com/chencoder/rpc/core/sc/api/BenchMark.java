@@ -7,19 +7,18 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.chencoder.rpc.common.CompressType;
+import com.chencoder.rpc.common.SerializeType;
 import com.chencoder.rpc.common.config.ClientConfig;
 import com.chencoder.rpc.core.RpcClient;
 
 public class BenchMark {
 	 private final static Logger LOGGER = LoggerFactory.getLogger(BenchMark.class);
 	public static void main(String[] args) {
-		ClientConfig config = new ClientConfig();
-		config.setRegistryAddress("localhost:2181");
-		//config.setRemoteIp("127.0.0.1");
-		//config.setRemotePort(1122);
-		config.setCompressType("None");
-		config.setSerializeType("Kyro");
-		
+		ClientConfig config = new ClientConfig.Builder()
+				.withRegistry("localhost:2181")
+				.compressType(CompressType.None.name())
+				.serializeType(SerializeType.Kyro.name()).build();
 		RpcClient client = new RpcClient(config);
 		DemoService demoService = client.refer(DemoService.class);
 		ExecutorService pool = Executors.newFixedThreadPool(30);

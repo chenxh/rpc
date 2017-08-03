@@ -22,7 +22,8 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 
 public class NettyDecoder extends ByteToMessageDecoder {
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
         if (byteBuf.readableBytes() < Constants.HEADER_SIZE) {
             return;

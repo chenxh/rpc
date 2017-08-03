@@ -16,7 +16,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcMessage> 
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ChannelHandler.class);
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, RpcMessage message) throws Exception {
         ResponseFuture responseFuture = ResponseFuture.CALLBACKS.remove(message.getHeader().getMessageID());

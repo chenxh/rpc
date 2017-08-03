@@ -1,7 +1,5 @@
 package com.chencoder.rpc.core.sc.api;
 
-import org.apache.curator.shaded.com.google.common.collect.Lists;
-
 import com.chencoder.rpc.common.config.RegistryConfig;
 import com.chencoder.rpc.common.config.ServerConfig;
 import com.chencoder.rpc.core.RpcServer;
@@ -13,16 +11,10 @@ public class ServerMain {
 	RegistryConfig registryConfig = null;
 	
 	private void initConfig(){
-		serverConfig = new ServerConfig();
-		serverConfig.setPort(1134);
-		serverConfig.setSoBacklog(128);
-		serverConfig.setSoKeepAlive(true);
-		serverConfig.setTcpNoDelay(true);
-		serverConfig.setInterceptors(Lists.newArrayList(new SimpleInterceptor()));
+		serverConfig = new ServerConfig.Builder(1134).tcpNoDelay(true).addInterceptor(new SimpleInterceptor()).build();
 		
 		//服务配置
-		registryConfig = new RegistryConfig();
-		registryConfig.setRegistryAddress("localhost:2181");
+		registryConfig = new RegistryConfig.Builder().registryAddress("localhost:2181").build();
 		
 	}
 	
