@@ -27,20 +27,15 @@ public class RpcServer {
 			exporter = new Exporter(registryConfig);
 		}
 		
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				close();
-			}
-		}));
+		Runtime.getRuntime().addShutdownHook(new Thread(this::close));
 	}
-	
-	public <T> void export(Class<T> serviceClass, T implObject){			
+
+	public <T> void export(Class<T> serviceClass, T implObject){
 		if(exporter != null)
 			exporter.exportService(serviceClass, implObject, config.getPort());
 		processor.addServiceProvider(serviceClass, implObject,config.getInterceptors());
 	}
-	
+
 	public void startServer(){
 		try {
 			transportServer = TransportServerFactory.newTransportServer(config, processor);
@@ -49,6 +44,7 @@ public class RpcServer {
 			throw new RpcException(e);
 		}
 	}
+
 
 	public ServerConfig getConfig() {
 		return config;

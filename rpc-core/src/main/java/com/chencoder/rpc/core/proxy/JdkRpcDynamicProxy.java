@@ -3,6 +3,7 @@ package com.chencoder.rpc.core.proxy;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +22,7 @@ import com.chencoder.rpc.core.invoker.ClusterClientInvoker;
 import com.chencoder.rpc.core.invoker.RpcInvokerWraper;
 import com.chencoder.rpc.core.invoker.SingleClientInvoker;
 import com.chencoder.rpc.core.transport.TransportClientFactory;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class JdkRpcDynamicProxy implements InvocationHandler,Closeable{
 	
@@ -32,7 +34,7 @@ public class JdkRpcDynamicProxy implements InvocationHandler,Closeable{
 	
 	private RpcInvoker invoker;
 	
-	protected Class<?> serviceClass;
+	private Class<?> serviceClass;
 	
 	public JdkRpcDynamicProxy(ClientConfig config, Class<?> serviceClass){
 		this.clientConfig = config;
@@ -57,6 +59,10 @@ public class JdkRpcDynamicProxy implements InvocationHandler,Closeable{
 
 	@Override
 	public Object invoke(Object target, Method method, Object[] args) throws Throwable {
+		Pair<Boolean, Object> result = invokeObjectMethod(target, method, args);
+		if(result.getKey()){
+			return result.getValue();
+		}
 		Request req = new Request();
 		req.setServiceName(serviceClass.getName());
 		req.setMethodName(method.getName());
@@ -68,6 +74,17 @@ public class JdkRpcDynamicProxy implements InvocationHandler,Closeable{
 		RpcRequest message = new RpcRequest(header, req);
 		setRpcContext();
 		return invoker.invoke(message);
+	}
+
+	private Pair<Boolean, Object> invokeObjectMethod(Object target, Method method, Object[] args) {
+		if (method.getDeclaringClass().equals(Object.class)) {
+			try {
+				return Pair.of(true, method.invoke(target, args));
+			} catch (IllegalAccessException e) {
+			} catch (InvocationTargetException e) {
+			}
+		}
+		return Pair.of(false, null);
 	}
 
 	private void setRpcContext() {
